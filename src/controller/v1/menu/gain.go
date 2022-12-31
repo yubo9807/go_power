@@ -29,7 +29,9 @@ func List(ctx *gin.Context) {
 		}
 	}
 
-	service.SuccessData(rows1)
+	data := []spider.Menu{}
+	data = append(data, rows1...)
+	service.SuccessData(data)
 }
 
 // 查询菜单

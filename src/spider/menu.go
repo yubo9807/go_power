@@ -36,8 +36,10 @@ func MenuPowerList(role string) []Menu {
 	var menuList []Menu
 	err := db.Select(&menuList, `SELECT t1.* FROM menu AS t1
 	LEFT JOIN correlation AS t2
-	ON t1.name = t2.name
-	WHERE t2.type = 'menu' AND t2.role = '`+role+"';")
+	ON t1.id = t2.table_id
+	LEFT JOIN roles AS t3
+	ON t2.role_id = t3.id
+	WHERE t2.table_name = 'menu' AND t3.role = '`+role+"';")
 	if err != nil {
 		panic(err.Error())
 	}

@@ -25,10 +25,10 @@ func Route(r *gin.RouterGroup) {
 
 	// 接口
 	r.POST("/interface/delete", common.Delete(tableNameInterface))
-	r.POST("/interface/update/menu", common.Update(tableNameInterface, tableNameMenu))
+	r.POST("/interface/update/menu", common.Update(tableNameInterface, "point"))
 	r.GET("/interface/list", orifice.List)
 
 	// btn
 	r.POST("/button/delete", common.Delete(tableNameButton))
-	r.POST("/button/update/menu", common.Update(tableNameButton, tableNameMenu))
+	r.POST("/button/update/menu", common.Update(tableNameButton, "point"))
 }
