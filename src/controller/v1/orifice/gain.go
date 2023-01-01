@@ -7,12 +7,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 添加角色
-func Additional(ctx *gin.Context) {
+// 获取所有菜单数据
+func List(ctx *gin.Context) {
 	type Params struct {
-		Method string `form:"method" binding:"required"`
-		Url    string `form:"url" binding:"required"`
-		Name   string `form:"name" binding:"required"`
+		Role  string `form:"role" binding:"required"`
+		Point string `form:"point"`
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
@@ -20,12 +19,38 @@ func Additional(ctx *gin.Context) {
 		return
 	}
 
-	rows := spider.InterfaceQuery(params.Method, params.Url)
-	if len(rows) > 0 {
-		service.ErrorCustom("接口已存在")
+	rows1 := spider.InterfaceList(params.Point)
+	rows2 := spider.InterfacePowerList(params.Role, params.Point)
+
+	for i := 0; i < len(rows1); i++ {
+		for j := 0; j < len(rows2); j++ {
+			if rows2[j].Url == rows1[i].Url {
+				rows1[i].Selected = true
+				rows1[i].CorrelationId = rows2[j].CorrelationId
+				rows1[i].RoleId = rows2[j].RoleId
+			}
+		}
+	}
+
+	data := []spider.Interface{}
+	data = append(data, rows1...)
+	service.SuccessData(data)
+}
+
+// 获取具有权限的所有接口
+func PowerList(ctx *gin.Context) {
+	type Params struct {
+		Role  string `form:"role" binding:"required"`
+		Point string `form:"point"`
+	}
+	var params Params
+	if err := ctx.ShouldBind(&params); err != nil {
+		service.ErrorParams()
 		return
 	}
 
-	spider.InterfaceAdditional(params.Method, params.Url, params.Name)
-	service.Success()
+	rows := spider.InterfacePowerList(params.Role, params.Point)
+	data := []spider.Interface{}
+	data = append(data, rows...)
+	service.SuccessData(data)
 }

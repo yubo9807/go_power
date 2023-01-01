@@ -3,6 +3,7 @@ package v1
 import (
 	"server/src/controller/common"
 	"server/src/controller/v1/correlation"
+	"server/src/controller/v1/element"
 	"server/src/controller/v1/menu"
 	"server/src/controller/v1/orifice"
 	"server/src/controller/v1/roles"
@@ -34,17 +35,23 @@ func Route(r *gin.RouterGroup) {
 	r.GET("/interface/list", orifice.List)
 
 	// 元素
+	r.POST("/element/add", element.Additional)
 	r.POST("/element/delete", common.Delete(tableNameElement))
+	r.POST("/element/update", element.Update)
 	r.POST("/element/update/point", common.Update(tableNameElement, "point"))
+	r.GET("element/list", element.List)
 
-	// 角色
-	r.POST("/roles/add", roles.Additional)
-	r.POST("/roles/delete", common.Delete(tableNameRoles))
-	r.POST("/roles/update", common.Update(tableNameRoles, "role"))
-	r.GET("/roles/list", roles.List)
-
-	// 关联表
+	// 关联表，权限控制
 	r.POST("/correlation/add", correlation.Additional)
 	r.POST("/correlation/delete", correlation.DeleteCorrelation)
+
+	// 角色
+	r.GET("/roles/list", roles.List)
+
+	// 后端需同步接口
+	r.GET("/interface/powerlist", orifice.PowerList)
+	r.POST("/roles/add", roles.Additional)
+	r.POST("/roles/update", common.Update(tableNameRoles, "role"))
+	r.POST("/roles/delete", common.Delete(tableNameRoles))
 
 }

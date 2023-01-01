@@ -1,4 +1,4 @@
-package orifice
+package element
 
 import (
 	"server/src/service"
@@ -7,11 +7,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 添加角色
 func Additional(ctx *gin.Context) {
 	type Params struct {
 		Method string `form:"method" binding:"required"`
-		Url    string `form:"url" binding:"required"`
+		Key    string `form:"key" binding:"required"`
 		Name   string `form:"name" binding:"required"`
 	}
 	var params Params
@@ -20,12 +19,12 @@ func Additional(ctx *gin.Context) {
 		return
 	}
 
-	rows := spider.InterfaceQuery(params.Method, params.Url)
+	rows := spider.ElememtQuery(params.Key, "")
 	if len(rows) > 0 {
-		service.ErrorCustom("接口已存在")
+		service.ErrorCustom("元素已存在")
 		return
 	}
 
-	spider.InterfaceAdditional(params.Method, params.Url, params.Name)
+	spider.ElememtAdditional(params.Key, params.Name)
 	service.Success()
 }

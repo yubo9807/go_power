@@ -6,10 +6,9 @@ import (
 	"time"
 )
 
-type Interface struct {
+type Elememt struct {
 	Id         string  `json:"id"`
-	Method     string  `json:"method"`
-	Url        string  `json:"url"`
+	Key        string  `json:"key"`
 	Name       string  `json:"name"`
 	CreateTime int     `json:"createTime" db:"create_time"`
 	UpdateTime *int    `json:"updateTime" db:"update_time"`
@@ -21,77 +20,77 @@ type Interface struct {
 }
 
 // 获取所有接口
-func InterfaceList(point string) []Interface {
+func ElememtList(point string) []Elememt {
 	db := service.DBConnect()
 	defer db.Close()
-	var interfaceList []Interface
+	var elementList []Elememt
 	joint := "IS NULL"
 	if point != "" {
 		joint = "= '" + point + "'"
 	}
-	err := db.Select(&interfaceList, "SELECT * FROM interface WHERE point "+joint+";")
+	err := db.Select(&elementList, "SELECT * FROM element WHERE point "+joint+";")
 	if err != nil {
 		panic(err.Error())
 	}
-	return interfaceList
+	return elementList
 }
 
-// 获取有权限的接口
-// @param point == "" 时查询公共模块接口
-func InterfacePowerList(role, point string) []Interface {
+// 获取有权限的元素
+// @param point == "" 时查询公共模块元素
+func ElememtPowerList(role, point string) []Elememt {
 	db := service.DBConnect()
 	defer db.Close()
-	var interfaceList []Interface
+	var elementList []Elememt
 	joint := "IS NULL"
 	if point != "" {
 		joint = "= '" + point + "'"
 	}
-	err := db.Select(&interfaceList, `SELECT
+	err := db.Select(&elementList, `SELECT
 	t1.*,
 	t2.id AS 'correlation_id',
 	t3.id AS 'role_id'
-	FROM interface AS t1
+	FROM element AS t1
 	LEFT JOIN correlation AS t2
 	ON t1.id = t2.table_id
 	LEFT JOIN roles AS t3
 	ON t2.role_id = t3.id
-	WHERE t2.table_type = 'interface' AND t3.role = '`+role+"' AND t1.point "+joint+";")
+	WHERE t2.table_type = 'element' AND t3.role = '`+role+"' AND t1.point "+joint+";")
 	if err != nil {
 		panic(err.Error())
 	}
-	return interfaceList
+	return elementList
 }
 
-// 查询接口
-func InterfaceQuery(method, url string) []Interface {
+// 查询元素
+func ElememtQuery(key, name string) []Elememt {
 	db := service.DBConnect()
 	defer db.Close()
-	var interfaceList []Interface
-	err := db.Select(&interfaceList, "SELECT * FROM interface WHERE method = '"+method+"' AND url LIKE '%"+url+"%';")
+	var elementList []Elememt
+	err := db.Select(&elementList, "SELECT * FROM element WHERE key = '"+key+"' AND name LIKE '%"+name+"%';")
 	if err != nil {
 		panic(err.Error())
 	}
-	return interfaceList
+	return elementList
 }
 
-// 修改接口数据
-func InterfaceModify(id, method, url, name string) {
+// 修改元素数据
+func ElememtModify(id, key, name string) {
 	db := service.DBConnect()
 	defer db.Close()
 	updateTime := time.Now().Unix()
-	_, err := db.Exec(`UPDATE interface SET update_time = ?, method = ? url = ?, name = ? WHERE id = ?;`, updateTime, method, url, name, id)
+	_, err := db.Exec(`UPDATE element SET update_time = ?, key = ? name = ? WHERE id = ?;`, updateTime, key, name, id)
 	if err != nil {
 		panic(err.Error())
 	}
 }
 
-// 添加接口
-func InterfaceAdditional(method, url, name string) {
+// 添加元素
+func ElememtAdditional(key, name string) {
 	db := service.DBConnect()
 	defer db.Close()
 	id := utils.CreateID()
 	createTime := time.Now().Unix()
-	_, err := db.Exec("INSERT INTO interface(id, method, url, name create_time) values(?, ?, ?);", id, method, url, name, createTime)
+	_, err := db.Exec("INSERT INTO element(id, key, name create_time) values(?, ?, ?);", id, key, name, createTime)
 	if err != nil {
 		panic(err.Error())
 	}
