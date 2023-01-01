@@ -8,15 +8,16 @@ import (
 
 type Interface struct {
 	Id         string  `json:"id"`
+	Method     string  `json:"method"`
 	Url        string  `json:"url"`
 	Name       string  `json:"name"`
 	CreateTime int     `json:"createTime" db:"create_time"`
 	UpdateTime *int    `json:"updateTime" db:"update_time"`
 	Point      *string `json:"point"`
 
-	Correlation_id *string `json:"correlation_id"`
-	Role_id        *string `json:"role_id"`
-	Selected       bool    `json:"selected"`
+	CorrelationId *string `json:"correlationId" db:"correlation_id"`
+	RoleId        *string `json:"roleId" db:"role_id"`
+	Selected      bool    `json:"selected"`
 }
 
 // 获取所有接口
@@ -62,11 +63,11 @@ func InterfacePowerList(role, point string) []Interface {
 }
 
 // 查询接口
-func InterfaceQuery(url string) []Interface {
+func InterfaceQuery(method, url string) []Interface {
 	db := service.DBConnect()
 	defer db.Close()
 	var interfaceList []Interface
-	err := db.Select(&interfaceList, "SELECT * FROM interface WHERE name LIKE '%"+url+"%';")
+	err := db.Select(&interfaceList, "SELECT * FROM interface WHERE method = '"+method+"' AND url LIKE '%"+url+"%';")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -74,11 +75,11 @@ func InterfaceQuery(url string) []Interface {
 }
 
 // 修改接口数据
-func InterfaceModify(id, url string) {
+func InterfaceModify(id, method, url, name string) {
 	db := service.DBConnect()
 	defer db.Close()
 	updateTime := time.Now().Unix()
-	_, err := db.Exec(`UPDATE interface SET update_time = ?, url = ? WHERE id = ?;`, updateTime, url, id)
+	_, err := db.Exec(`UPDATE interface SET update_time = ?, method = ? url = ?, name = ? WHERE id = ?;`, updateTime, method, url, name, id)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -95,12 +96,12 @@ func InterfaceModifyMenu(id, menu string) {
 }
 
 // 添加接口
-func InterfaceAdditional(url, name string) {
+func InterfaceAdditional(method, url, name string) {
 	db := service.DBConnect()
 	defer db.Close()
 	id := utils.CreateID()
 	createTime := time.Now().Unix()
-	_, err := db.Exec("INSERT INTO interface(id, url, name create_time) values(?, ?, ?);", id, url, name, createTime)
+	_, err := db.Exec("INSERT INTO interface(id, method, url, name create_time) values(?, ?, ?);", id, method, url, name, createTime)
 	if err != nil {
 		panic(err.Error())
 	}

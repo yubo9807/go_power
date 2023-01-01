@@ -1,4 +1,4 @@
-package menu
+package orifice
 
 import (
 	"server/src/service"
@@ -10,7 +10,8 @@ import (
 // 获取所有菜单数据
 func List(ctx *gin.Context) {
 	type Params struct {
-		Role string `form:"role" binding:"required"`
+		Role  string `form:"role" binding:"required"`
+		Point string `form:"point"`
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
@@ -18,12 +19,12 @@ func List(ctx *gin.Context) {
 		return
 	}
 
-	rows1 := spider.MenuList()
-	rows2 := spider.MenuPowerList(params.Role)
+	rows1 := spider.InterfaceList(params.Point)
+	rows2 := spider.InterfacePowerList(params.Role, params.Point)
 
 	for i := 0; i < len(rows1); i++ {
 		for j := 0; j < len(rows2); j++ {
-			if rows2[j].Name == rows1[i].Name {
+			if rows2[j].Url == rows1[i].Url {
 				rows1[i].Selected = true
 				rows1[i].CorrelationId = rows2[j].CorrelationId
 				rows1[i].RoleId = rows2[j].RoleId
@@ -31,7 +32,7 @@ func List(ctx *gin.Context) {
 		}
 	}
 
-	data := []spider.Menu{}
+	data := []spider.Interface{}
 	data = append(data, rows1...)
 	service.SuccessData(data)
 }

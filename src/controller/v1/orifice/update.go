@@ -7,9 +7,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 添加角色
-func Additional(ctx *gin.Context) {
+func Update(ctx *gin.Context) {
 	type Params struct {
+		Id     string `form:"id" binding:"required"`
 		Method string `form:"method" binding:"required"`
 		Url    string `form:"url" binding:"required"`
 		Name   string `form:"name" binding:"required"`
@@ -20,12 +20,5 @@ func Additional(ctx *gin.Context) {
 		return
 	}
 
-	rows := spider.InterfaceQuery(params.Method, params.Url)
-	if len(rows) > 0 {
-		service.ErrorCustom("接口已存在")
-		return
-	}
-
-	spider.InterfaceAdditional(params.Method, params.Url, params.Name)
-	service.Success()
+	spider.InterfaceModify(params.Id, params.Method, params.Url, params.Name)
 }

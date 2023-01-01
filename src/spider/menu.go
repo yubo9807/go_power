@@ -15,9 +15,9 @@ type Menu struct {
 	Hidden     bool    `json:"hidden"`
 	Parent     *string `json:"parent"`
 
-	Correlation_id *string `json:"correlation_id"`
-	Role_id        *string `json:"role_id"`
-	Selected       bool    `json:"selected"`
+	CorrelationId *string `json:"correlationId" db:"correlation_id"`
+	RoleId        *string `json:"roleId" db:"role_id"`
+	Selected      bool    `json:"selected"`
 }
 
 // 获取所有菜单
