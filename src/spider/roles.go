@@ -26,6 +26,17 @@ func RoleList() []Role {
 	return roleList
 }
 
+func RoleQuery(role string) []Role {
+	db := service.DBConnect()
+	defer db.Close()
+	var roleList []Role
+	err := db.Select(&roleList, "SELECT * FROM element WHERE name = '"+role+"';")
+	if err != nil {
+		panic(err.Error())
+	}
+	return roleList
+}
+
 // 添加角色
 func RoleAdditional(role string) {
 	db := service.DBConnect()

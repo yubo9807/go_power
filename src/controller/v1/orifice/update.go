@@ -20,5 +20,11 @@ func Update(ctx *gin.Context) {
 		return
 	}
 
+	rows := spider.InterfaceQuery(params.Method, params.Url)
+	if len(rows) > 0 {
+		service.ErrorCustom("接口已存在")
+		return
+	}
+
 	spider.InterfaceModify(params.Id, params.Method, params.Url, params.Name)
 }

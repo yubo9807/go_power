@@ -19,5 +19,11 @@ func Update(ctx *gin.Context) {
 		return
 	}
 
+	rows := spider.ElememtQuery(params.Key, "")
+	if len(rows) > 0 {
+		service.ErrorCustom("元素已存在")
+		return
+	}
+
 	spider.ElememtModify(params.Id, params.Key, params.Name)
 }

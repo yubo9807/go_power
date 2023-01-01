@@ -1,4 +1,4 @@
-package menu
+package roles
 
 import (
 	"server/src/service"
@@ -7,13 +7,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 更新基本信息
 func Update(ctx *gin.Context) {
 	type Params struct {
 		Id     string `form:"id" binding:"required"`
-		Name   string `form:"name" binding:"required"`
-		Hidden bool   `form:"hidden"`
-		Title  string `form:"title"`
+		Role   string `form:"role" binding:"required"`
+		Remark string `form:"remark"`
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
@@ -21,12 +19,12 @@ func Update(ctx *gin.Context) {
 		return
 	}
 
-	rows := spider.MenuQuery(params.Name, "")
+	rows := spider.RoleQuery(params.Role)
 	if len(rows) > 0 {
-		service.ErrorCustom("菜单'" + params.Name + "'已存在")
+		service.ErrorCustom("角色" + params.Role + "已存在")
 		return
 	}
 
-	spider.MenuModify(params.Id, params.Name, params.Hidden, params.Title)
+	spider.CommonUpdate("element", params.Id, "role", params.Role)
 	service.Success()
 }
