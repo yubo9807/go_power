@@ -21,7 +21,7 @@ func CommonUpdate(tableName, id, key, value string) {
 	db := service.DBConnect()
 	defer db.Close()
 	updateTime := time.Now().Unix()
-	_, err := db.Exec(`UPDATE ? SET update_time = ?, ? = ? WHERE id = ?;`, tableName, updateTime, key, value)
+	_, err := db.Exec(`UPDATE ? SET update_time = ?, ? = ? WHERE id = ?;`, tableName, updateTime, key, value, id)
 	if err != nil {
 		panic(err.Error())
 	}

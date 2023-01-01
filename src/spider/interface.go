@@ -13,7 +13,10 @@ type Interface struct {
 	CreateTime int     `json:"createTime" db:"create_time"`
 	UpdateTime *int    `json:"updateTime" db:"update_time"`
 	Point      *string `json:"point"`
-	Selected   bool    `json:"selected"`
+
+	Correlation_id *string `json:"correlation_id"`
+	Role_id        *string `json:"role_id"`
+	Selected       bool    `json:"selected"`
 }
 
 // 获取所有接口
@@ -42,12 +45,16 @@ func InterfacePowerList(role, point string) []Interface {
 	if point != "" {
 		joint = "= '" + point + "'"
 	}
-	err := db.Select(&interfaceList, `SELECT t1.* FROM interface AS t1
+	err := db.Select(&interfaceList, `SELECT
+	t1.*,
+	t2.id AS 'correlation_id',
+	t3.id AS 'role_id'
+	FROM interface AS t1
 	LEFT JOIN correlation AS t2
 	ON t1.id = t2.table_id
 	LEFT JOIN roles AS t3
 	ON t2.role_id = t3.id
-	WHERE t2.table_name = 'interface' AND t3.role = '`+role+"' AND t1.point "+joint+";")
+	WHERE t2.table_type = 'interface' AND t3.role = '`+role+"' AND t1.point "+joint+";")
 	if err != nil {
 		panic(err.Error())
 	}

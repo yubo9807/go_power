@@ -14,7 +14,10 @@ type Menu struct {
 	Title      *string `json:"title"`
 	Hidden     bool    `json:"hidden"`
 	Parent     *string `json:"parent"`
-	Selected   bool    `json:"selected"`
+
+	Correlation_id *string `json:"correlation_id"`
+	Role_id        *string `json:"role_id"`
+	Selected       bool    `json:"selected"`
 }
 
 // 获取所有菜单
@@ -34,12 +37,14 @@ func MenuPowerList(role string) []Menu {
 	db := service.DBConnect()
 	defer db.Close()
 	var menuList []Menu
-	err := db.Select(&menuList, `SELECT t1.* FROM menu AS t1
+	err := db.Select(&menuList, `SELECT
+	t1.*, t2.id AS 'correlation_id', t3.id AS 'role_id'
+	FROM menu AS t1
 	LEFT JOIN correlation AS t2
 	ON t1.id = t2.table_id
 	LEFT JOIN roles AS t3
 	ON t2.role_id = t3.id
-	WHERE t2.table_name = 'menu' AND t3.role = '`+role+"';")
+	WHERE t2.table_type = 'menu' AND t3.role = '`+role+"';")
 	if err != nil {
 		panic(err.Error())
 	}

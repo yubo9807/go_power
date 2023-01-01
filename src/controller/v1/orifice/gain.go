@@ -26,6 +26,8 @@ func List(ctx *gin.Context) {
 		for j := 0; j < len(rows2); j++ {
 			if rows2[j].Url == rows1[i].Url {
 				rows1[i].Selected = true
+				rows1[i].Correlation_id = rows2[j].Correlation_id
+				rows1[i].Role_id = rows2[j].Role_id
 			}
 		}
 	}
