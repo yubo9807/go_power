@@ -31,14 +31,14 @@ func Route(r *gin.RouterGroup) {
 	r.POST("/interface/add", orifice.Additional)
 	r.POST("/interface/delete", common.Delete(tableNameInterface))
 	r.POST("/interface/update", orifice.Update)
-	r.POST("/interface/update/point", common.Update(tableNameInterface, "point"))
+	r.POST("/interface/update/point", common.Update(tableNameInterface, "menu_id"))
 	r.GET("/interface/list", orifice.List)
 
 	// 元素
 	r.POST("/element/add", element.Additional)
 	r.POST("/element/delete", common.Delete(tableNameElement))
 	r.POST("/element/update", element.Update)
-	r.POST("/element/update/point", common.Update(tableNameElement, "point"))
+	r.POST("/element/update/point", common.Update(tableNameElement, "menu_id"))
 	r.GET("element/list", element.List)
 
 	// 关联表，权限控制

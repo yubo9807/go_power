@@ -10,8 +10,8 @@ import (
 // 获取所有菜单数据
 func List(ctx *gin.Context) {
 	type Params struct {
-		Role  string `form:"role" binding:"required"`
-		Point string `form:"point"`
+		Role   string `form:"role" binding:"required"`
+		MenuId string `form:"menuId"`
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
@@ -19,8 +19,8 @@ func List(ctx *gin.Context) {
 		return
 	}
 
-	rows1 := spider.InterfaceList(params.Point)
-	rows2 := spider.InterfacePowerList(params.Role, params.Point)
+	rows1 := spider.InterfaceList(params.MenuId)
+	rows2 := spider.InterfacePowerList(params.Role, params.MenuId)
 
 	for i := 0; i < len(rows1); i++ {
 		for j := 0; j < len(rows2); j++ {
@@ -40,8 +40,8 @@ func List(ctx *gin.Context) {
 // 获取具有权限的所有接口
 func PowerList(ctx *gin.Context) {
 	type Params struct {
-		Role  string `form:"role" binding:"required"`
-		Point string `form:"point"`
+		Role   string `form:"role" binding:"required"`
+		MenuId string `form:"menuId"`
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
@@ -49,7 +49,7 @@ func PowerList(ctx *gin.Context) {
 		return
 	}
 
-	rows := spider.InterfacePowerList(params.Role, params.Point)
+	rows := spider.InterfacePowerList(params.Role, params.MenuId)
 	data := []spider.Interface{}
 	data = append(data, rows...)
 	service.SuccessData(data)

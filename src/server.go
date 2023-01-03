@@ -12,7 +12,7 @@ func server() *gin.Engine {
 
 	app := gin.Default()
 
-	base := app.Group("/base")
+	base := app.Group("/permissions")
 	base.Use(middleware.Recover)
 	base.Use(middleware.Core)
 	base.Use(middleware.Logs)

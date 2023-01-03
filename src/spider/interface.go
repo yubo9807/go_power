@@ -13,7 +13,7 @@ type Interface struct {
 	Name       string  `json:"name"`
 	CreateTime int     `json:"createTime" db:"create_time"`
 	UpdateTime *int    `json:"updateTime" db:"update_time"`
-	Point      *string `json:"point"`
+	MenuId     *string `json:"menuId" db:"menu_id"`
 
 	CorrelationId *string `json:"correlationId" db:"correlation_id"`
 	RoleId        *string `json:"roleId" db:"role_id"`
@@ -21,15 +21,15 @@ type Interface struct {
 }
 
 // 获取所有接口
-func InterfaceList(point string) []Interface {
+func InterfaceList(menuId string) []Interface {
 	db := service.DBConnect()
 	defer db.Close()
 	var interfaceList []Interface
 	joint := "IS NULL"
-	if point != "" {
-		joint = "= '" + point + "'"
+	if menuId != "" {
+		joint = "= '" + menuId + "'"
 	}
-	err := db.Select(&interfaceList, "SELECT * FROM interface WHERE point "+joint+";")
+	err := db.Select(&interfaceList, "SELECT * FROM interface WHERE menu_id "+joint+";")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -38,13 +38,13 @@ func InterfaceList(point string) []Interface {
 
 // 获取有权限的接口
 // @param point == "" 时查询公共模块接口
-func InterfacePowerList(role, point string) []Interface {
+func InterfacePowerList(role, menuId string) []Interface {
 	db := service.DBConnect()
 	defer db.Close()
 	var interfaceList []Interface
 	joint := "IS NULL"
-	if point != "" {
-		joint = "= '" + point + "'"
+	if menuId != "" {
+		joint = "= '" + menuId + "'"
 	}
 	err := db.Select(&interfaceList, `SELECT
 	t1.*,
@@ -55,7 +55,7 @@ func InterfacePowerList(role, point string) []Interface {
 	ON t1.id = t2.table_id
 	LEFT JOIN roles AS t3
 	ON t2.role_id = t3.id
-	WHERE t2.table_type = 'interface' AND t3.role = '`+role+"' AND t1.point "+joint+";")
+	WHERE t2.table_type = 'interface' AND t3.role = '`+role+"' AND t1.menu_id "+joint+";")
 	if err != nil {
 		panic(err.Error())
 	}

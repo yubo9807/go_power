@@ -12,7 +12,7 @@ type Elememt struct {
 	Name       string  `json:"name"`
 	CreateTime int     `json:"createTime" db:"create_time"`
 	UpdateTime *int    `json:"updateTime" db:"update_time"`
-	Point      *string `json:"point"`
+	MenuId     *string `json:"menuId" db:"menu_id"`
 
 	CorrelationId *string `json:"correlationId" db:"correlation_id"`
 	RoleId        *string `json:"roleId" db:"role_id"`
@@ -20,15 +20,15 @@ type Elememt struct {
 }
 
 // 获取所有接口
-func ElememtList(point string) []Elememt {
+func ElememtList(menuId string) []Elememt {
 	db := service.DBConnect()
 	defer db.Close()
 	var elementList []Elememt
 	joint := "IS NULL"
-	if point != "" {
-		joint = "= '" + point + "'"
+	if menuId != "" {
+		joint = "= '" + menuId + "'"
 	}
-	err := db.Select(&elementList, "SELECT * FROM element WHERE point "+joint+";")
+	err := db.Select(&elementList, "SELECT * FROM element WHERE menu_id "+joint+";")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -37,13 +37,13 @@ func ElememtList(point string) []Elememt {
 
 // 获取有权限的元素
 // @param point == "" 时查询公共模块元素
-func ElememtPowerList(role, point string) []Elememt {
+func ElememtPowerList(role, menuId string) []Elememt {
 	db := service.DBConnect()
 	defer db.Close()
 	var elementList []Elememt
 	joint := "IS NULL"
-	if point != "" {
-		joint = "= '" + point + "'"
+	if menuId != "" {
+		joint = "= '" + menuId + "'"
 	}
 	err := db.Select(&elementList, `SELECT
 	t1.*,
@@ -54,7 +54,7 @@ func ElememtPowerList(role, point string) []Elememt {
 	ON t1.id = t2.table_id
 	LEFT JOIN roles AS t3
 	ON t2.role_id = t3.id
-	WHERE t2.table_type = 'element' AND t3.role = '`+role+"' AND t1.point "+joint+";")
+	WHERE t2.table_type = 'element' AND t3.role = '`+role+"' AND t1.menu_id "+joint+";")
 	if err != nil {
 		panic(err.Error())
 	}
