@@ -13,6 +13,7 @@ func Synchronization(ctx *gin.Context) {
 		RoleId      string   `form:"roleId" binding:"required"`
 		TableIdList []string `form:"tableIdList" binding:"required"`
 		TableType   string   `form:"tableType" binding:"required"`
+		MenuId      string   `form:"menuId"`
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
@@ -21,7 +22,13 @@ func Synchronization(ctx *gin.Context) {
 	}
 
 	newTableIdList := make([]string, 0)
-	rows := spider.CorrelationTableTypeQuery(params.RoleId, params.TableType)
+	var rows []spider.Correlation
+	if params.TableType == "menu" {
+		rows = spider.CorrelationTableTypeQuery(params.RoleId, params.TableType)
+	} else {
+		rows = spider.CorrelationTableTypeQuery2(params.RoleId, params.TableType, params.MenuId)
+	}
+
 	for i := 0; i < len(params.TableIdList); i++ {
 		exist := false
 		for j := 0; j < len(rows); j++ {

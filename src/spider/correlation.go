@@ -75,6 +75,26 @@ func CorrelationTableTypeQuery(roleId, tableType string) []Correlation {
 	return correlation
 }
 
+// 按类型查询（针对有分类的接口和元素）
+func CorrelationTableTypeQuery2(roleId, tableType string, menuId string) []Correlation {
+	joint := "IS NULL;"
+	if menuId != "" {
+		joint = "= " + menuId + ";"
+	}
+	db := service.DBConnect()
+	defer db.Close()
+	var correlation []Correlation
+	err := db.Select(&correlation, `SELECT t1.* FROM
+	correlation AS t1
+	LEFT JOIN interface AS t2
+	ON t1.table_id = t2.id
+	WHERE t1.role_id = `+roleId+` AND t1.table_type = '`+tableType+`' AND t2.menu_id `+joint)
+	if err != nil {
+		panic(err.Error())
+	}
+	return correlation
+}
+
 // 查询已存在的关联
 func CorrelationQuery(roleId, tableId, tableType string) []Correlation {
 	db := service.DBConnect()
