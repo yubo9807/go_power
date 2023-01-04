@@ -21,11 +21,11 @@ type Menu struct {
 }
 
 // 获取所有菜单
-func MenuList() []Menu {
+func MenuList(title string) []Menu {
 	db := service.DBConnect()
 	defer db.Close()
 	var menuList []Menu
-	err := db.Select(&menuList, "SELECT * FROM menu;")
+	err := db.Select(&menuList, "SELECT * FROM menu WHERE title LIKE '%"+title+"%';")
 	if err != nil {
 		panic(err.Error())
 	}

@@ -22,7 +22,7 @@ type Interface struct {
 }
 
 // 获取所有接口
-func InterfaceList(menuId string) []Interface {
+func InterfaceList(menuId, url string) []Interface {
 	db := service.DBConnect()
 	defer db.Close()
 	var interfaceList []Interface
@@ -30,7 +30,7 @@ func InterfaceList(menuId string) []Interface {
 	if menuId != "" {
 		joint = "= '" + menuId + "'"
 	}
-	err := db.Select(&interfaceList, "SELECT * FROM interface WHERE menu_id "+joint+";")
+	err := db.Select(&interfaceList, "SELECT * FROM interface WHERE menu_id "+joint+" AND url LIKE '%"+url+"%';")
 	if err != nil {
 		panic(err.Error())
 	}

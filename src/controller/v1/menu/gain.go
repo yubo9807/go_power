@@ -11,6 +11,7 @@ import (
 func List(ctx *gin.Context) {
 	type Params struct {
 		RoleId string `form:"roleId" binding:"required"`
+		Title  string `form:"title"`
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
@@ -18,7 +19,7 @@ func List(ctx *gin.Context) {
 		return
 	}
 
-	rows1 := spider.MenuList()
+	rows1 := spider.MenuList(params.Title)
 	rows2 := spider.MenuPowerList(params.RoleId)
 
 	for i := 0; i < len(rows1); i++ {

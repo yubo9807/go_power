@@ -12,6 +12,7 @@ func List(ctx *gin.Context) {
 	type Params struct {
 		RoleId string `form:"roleId" binding:"required"`
 		MenuId string `form:"menuId"`
+		Url    string `form:"url"`
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
@@ -19,7 +20,7 @@ func List(ctx *gin.Context) {
 		return
 	}
 
-	rows1 := spider.InterfaceList(params.MenuId)
+	rows1 := spider.InterfaceList(params.MenuId, params.Url)
 	rows2 := spider.InterfacePowerList(params.RoleId, params.MenuId)
 
 	for i := 0; i < len(rows1); i++ {
