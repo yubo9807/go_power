@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 获取所有菜单数据
+// 获取接口数据（按模块）
 func List(ctx *gin.Context) {
 	type Params struct {
 		RoleId string `form:"roleId" binding:"required"`
@@ -39,10 +39,9 @@ func List(ctx *gin.Context) {
 }
 
 // 获取具有权限的所有接口
-func PowerList(ctx *gin.Context) {
+func PowerListAll(ctx *gin.Context) {
 	type Params struct {
 		RoleId string `form:"roleId" binding:"required"`
-		MenuId string `form:"menuId"`
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
@@ -50,7 +49,7 @@ func PowerList(ctx *gin.Context) {
 		return
 	}
 
-	rows := spider.InterfacePowerList(params.RoleId, params.MenuId)
+	rows := spider.InterfacePowerListAll(params.RoleId)
 	data := []spider.Interface{}
 	data = append(data, rows...)
 	service.SuccessData(data)

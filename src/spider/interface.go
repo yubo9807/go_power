@@ -63,6 +63,26 @@ func InterfacePowerList(roleId, menuId string) []Interface {
 	return interfaceList
 }
 
+func InterfacePowerListAll(roleId string) []Interface {
+	db := service.DBConnect()
+	defer db.Close()
+	var interfaceList []Interface
+	err := db.Select(&interfaceList, `SELECT
+	t1.*,
+	t2.id AS 'correlation_id',
+	t3.id AS 'role_id'
+	FROM interface AS t1
+	LEFT JOIN correlation AS t2
+	ON t1.id = t2.table_id
+	LEFT JOIN roles AS t3
+	ON t2.role_id = t3.id
+	WHERE t2.table_type = 'interface' AND t3.id = '`+roleId+"';")
+	if err != nil {
+		panic(err.Error())
+	}
+	return interfaceList
+}
+
 // 查询接口
 func InterfaceQuery(method, url string) []Interface {
 	db := service.DBConnect()

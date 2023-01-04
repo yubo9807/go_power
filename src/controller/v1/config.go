@@ -42,7 +42,7 @@ func Route(r *gin.RouterGroup) {
 	r.POST("/correlation/synchronization", correlation.Synchronization)
 
 	// 后端拿到该角色有权限的接口，做中间件拦截
-	r.GET("/interface/powerlist", orifice.PowerList)
+	r.GET("/interface/powerlist", orifice.PowerListAll)
 
 	// 角色
 	r.GET("/roles/list", roles.List)

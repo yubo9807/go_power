@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// 获取元素数据（按模块）
 func List(ctx *gin.Context) {
 	type Params struct {
 		RoleId string `form:"roleId" binding:"required"`
