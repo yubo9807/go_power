@@ -21,7 +21,7 @@ type Interface struct {
 	Selected      bool    `json:"selected"`
 }
 
-// 获取所有接口
+// 获取接口（按模块）
 func InterfaceList(menuId, url string) []Interface {
 	db := service.DBConnect()
 	defer db.Close()
@@ -37,7 +37,7 @@ func InterfaceList(menuId, url string) []Interface {
 	return interfaceList
 }
 
-// 获取有权限的接口
+// 获取有权限的接口（按模块）
 // @param point == "" 时查询公共模块接口
 func InterfacePowerList(roleId, menuId string) []Interface {
 	db := service.DBConnect()

@@ -27,15 +27,14 @@ func Synchronization(ctx *gin.Context) {
 	for i := 0; i < len(params.ContactIdList); i++ {
 		exist := false
 		for j := 0; j < len(rows); j++ {
-			exist = params.ContactIdList[i] == rows[j].RoleId && params.ContactIdList[i] == rows[j].TableId
+			exist = params.ContactIdList[i] == rows[j].TableId
 			if exist {
 				break
 			}
 		}
-		if exist { // 已经存在
-			continue
+		if !exist { // 已经不存在
+			newContactIdList = append(newContactIdList, params.ContactIdList[i])
 		}
-		newContactIdList = append(newContactIdList, params.ContactIdList[i])
 	}
 
 	spider.CorrelationBatchAdditional(params.TableType, params.RoleId, newContactIdList, params.DeleteIdList)
