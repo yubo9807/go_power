@@ -37,7 +37,7 @@ func ElememtList(menuId string) []Elememt {
 
 // 获取有权限的元素
 // @param point == "" 时查询公共模块元素
-func ElememtPowerList(role, menuId string) []Elememt {
+func ElememtPowerList(roleId, menuId string) []Elememt {
 	db := service.DBConnect()
 	defer db.Close()
 	var elementList []Elememt
@@ -54,7 +54,7 @@ func ElememtPowerList(role, menuId string) []Elememt {
 	ON t1.id = t2.table_id
 	LEFT JOIN roles AS t3
 	ON t2.role_id = t3.id
-	WHERE t2.table_type = 'element' AND t3.role = '`+role+"' AND t1.menu_id "+joint+";")
+	WHERE t2.table_type = 'element' AND t3.id = '`+roleId+"' AND t1.menu_id "+joint+";")
 	if err != nil {
 		panic(err.Error())
 	}

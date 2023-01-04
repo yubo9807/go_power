@@ -9,7 +9,7 @@ import (
 
 func List(ctx *gin.Context) {
 	type Params struct {
-		Role   string `form:"role" binding:"required"`
+		RoleId string `form:"roleId" binding:"required"`
 		MenuId string `form:"menuId"`
 	}
 	var params Params
@@ -19,7 +19,7 @@ func List(ctx *gin.Context) {
 	}
 
 	rows1 := spider.ElememtList(params.MenuId)
-	rows2 := spider.ElememtPowerList(params.Role, params.MenuId)
+	rows2 := spider.ElememtPowerList(params.RoleId, params.MenuId)
 
 	for i := 0; i < len(rows1); i++ {
 		for j := 0; j < len(rows2); j++ {

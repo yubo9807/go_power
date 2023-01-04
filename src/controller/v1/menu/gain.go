@@ -10,7 +10,7 @@ import (
 // 获取所有菜单数据
 func List(ctx *gin.Context) {
 	type Params struct {
-		Role string `form:"role" binding:"required"`
+		RoleId string `form:"roleId" binding:"required"`
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
@@ -19,7 +19,7 @@ func List(ctx *gin.Context) {
 	}
 
 	rows1 := spider.MenuList()
-	rows2 := spider.MenuPowerList(params.Role)
+	rows2 := spider.MenuPowerList(params.RoleId)
 
 	for i := 0; i < len(rows1); i++ {
 		for j := 0; j < len(rows2); j++ {

@@ -33,7 +33,7 @@ func MenuList() []Menu {
 }
 
 // 获取有权限的菜单
-func MenuPowerList(role string) []Menu {
+func MenuPowerList(roleId string) []Menu {
 	db := service.DBConnect()
 	defer db.Close()
 	var menuList []Menu
@@ -44,7 +44,7 @@ func MenuPowerList(role string) []Menu {
 	ON t1.id = t2.table_id
 	LEFT JOIN roles AS t3
 	ON t2.role_id = t3.id
-	WHERE t2.table_type = 'menu' AND t3.role = '`+role+"';")
+	WHERE t2.table_type = 'menu' AND t3.id = '`+roleId+"';")
 	if err != nil {
 		panic(err.Error())
 	}

@@ -24,26 +24,24 @@ func Route(r *gin.RouterGroup) {
 	r.POST("/menu/add", menu.Additional)
 	r.POST("/menu/delete", common.Delete(tableNameMenu))
 	r.POST("/menu/modify", menu.Update)
-	r.POST("/menu/modify/parent", common.Update(tableNameMenu, "parent"))
 	r.GET("/menu/list", menu.List)
 
 	// 接口
 	r.POST("/interface/add", orifice.Additional)
 	r.POST("/interface/delete", common.Delete(tableNameInterface))
 	r.POST("/interface/modify", orifice.Update)
-	r.POST("/interface/modify/point", common.Update(tableNameInterface, "menu_id"))
 	r.GET("/interface/list", orifice.List)
 
 	// 元素
 	r.POST("/element/add", element.Additional)
 	r.POST("/element/delete", common.Delete(tableNameElement))
 	r.POST("/element/modify", element.Update)
-	r.POST("/element/modify/point", common.Update(tableNameElement, "menu_id"))
 	r.GET("element/list", element.List)
 
 	// 关联表，权限控制
 	r.POST("/correlation/add", correlation.Additional)
 	r.POST("/correlation/delete", correlation.DeleteCorrelation)
+	r.POST("/correlation/synchronization", correlation.Synchronization)
 
 	// 角色
 	r.GET("/roles/list", roles.List)

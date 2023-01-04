@@ -39,7 +39,7 @@ func InterfaceList(menuId string) []Interface {
 
 // 获取有权限的接口
 // @param point == "" 时查询公共模块接口
-func InterfacePowerList(role, menuId string) []Interface {
+func InterfacePowerList(roleId, menuId string) []Interface {
 	db := service.DBConnect()
 	defer db.Close()
 	var interfaceList []Interface
@@ -56,7 +56,7 @@ func InterfacePowerList(role, menuId string) []Interface {
 	ON t1.id = t2.table_id
 	LEFT JOIN roles AS t3
 	ON t2.role_id = t3.id
-	WHERE t2.table_type = 'interface' AND t3.role = '`+role+"' AND t1.menu_id "+joint+";")
+	WHERE t2.table_type = 'interface' AND t3.id = '`+roleId+"' AND t1.menu_id "+joint+";")
 	if err != nil {
 		panic(err.Error())
 	}
