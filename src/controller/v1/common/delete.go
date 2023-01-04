@@ -7,21 +7,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 修改某张表的某一个字段
-func Update(tableName, key string) func(ctx *gin.Context) {
+// 删除某张表中的某条数据，顺带将关联表中的数据删除
+func Delete(tableName string) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		type Params struct {
-			Id    string `form:"id" binding:"required"`
-			Value string `form:"value" binding:"required"`
+			Id string `form:"id" binding:"required"`
 		}
-
 		var params Params
 		if err := ctx.ShouldBind(&params); err != nil {
 			service.ErrorParams()
 			return
 		}
 
-		spider.CommonUpdate(tableName, params.Id, key, params.Value)
+		spider.CommonDelete(tableName, params.Id)
+		spider.CorrelationDeleteCorrelation(tableName, params.Id)
 		service.Success()
 	}
 }

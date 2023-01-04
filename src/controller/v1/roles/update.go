@@ -19,6 +19,6 @@ func Update(ctx *gin.Context) {
 		return
 	}
 
-	spider.CommonUpdate("element", params.Id, "role", params.Role)
+	spider.RoleUpdate(params.Id, params.Role, params.Remark)
 	service.Success()
 }

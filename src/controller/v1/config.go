@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"server/src/controller/common"
+	"server/src/controller/v1/common"
 	"server/src/controller/v1/correlation"
 	"server/src/controller/v1/element"
 	"server/src/controller/v1/menu"
@@ -39,17 +39,15 @@ func Route(r *gin.RouterGroup) {
 	r.GET("element/list", element.List)
 
 	// 关联表，权限控制
-	r.POST("/correlation/add", correlation.Additional)
-	r.POST("/correlation/delete", correlation.DeleteCorrelation)
 	r.POST("/correlation/synchronization", correlation.Synchronization)
+
+	// 后端拿到该角色有权限的接口，做中间件拦截
+	r.GET("/interface/powerlist", orifice.PowerList)
 
 	// 角色
 	r.GET("/roles/list", roles.List)
-
-	// 后端需同步接口
-	r.GET("/interface/powerlist", orifice.PowerList)
 	r.POST("/roles/add", roles.Additional)
-	r.POST("/roles/modify", common.Update(tableNameRoles, "role"))
-	r.POST("/roles/delete", common.Delete(tableNameRoles))
+	r.POST("/roles/modify", roles.Update)
+	r.POST("/roles/delete", roles.Delete)
 
 }

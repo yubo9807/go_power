@@ -1,4 +1,4 @@
-package correlation
+package roles
 
 import (
 	"server/src/service"
@@ -7,18 +7,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 删除关联信息
-func DeleteCorrelation(ctx *gin.Context) {
+func Delete(ctx *gin.Context) {
 	type Params struct {
-		TableId string `form:"tableId" binding:"required"`
+		Id string `form:"id" binding:"required"`
 	}
-
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
 		service.ErrorParams()
 		return
 	}
 
-	spider.CorrelationDeleteCorrelation(params.TableId)
+	spider.CommonDelete("roles", params.Id)
 	service.Success()
 }

@@ -48,3 +48,14 @@ func RoleAdditional(role string) {
 		panic(err.Error())
 	}
 }
+
+// 修改信息
+func RoleUpdate(id, role, remark string) {
+	db := service.DBConnect()
+	defer db.Close()
+	updateTime := time.Now().Unix()
+	_, err := db.Exec(`UPDATE roles SET update_time = ?, role = ?, remark = ? WHERE id = ?;`, updateTime, role, remark, id)
+	if err != nil {
+		panic(err.Error())
+	}
+}

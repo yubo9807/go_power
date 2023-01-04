@@ -53,11 +53,11 @@ func CorrelationBatchAdditional(tableType, roleId string, tableIdList, delTableI
 	}
 }
 
-// 删除符合关联 table_id 的数据
-func CorrelationDeleteCorrelation(tableId string) {
+// 删除关联的数据
+func CorrelationDeleteCorrelation(tableType, tableId string) {
 	db := service.DBConnect()
 	defer db.Close()
-	_, err := db.Exec("DELETE FROM correlation WHERE table_id = ?;", tableId)
+	_, err := db.Exec("DELETE FROM correlation WHERE table_type = ? AND table_id = ?;", tableType, tableId)
 	if err != nil {
 		panic(err.Error())
 	}
