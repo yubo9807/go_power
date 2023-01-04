@@ -10,9 +10,10 @@ import (
 // 添加角色
 func Additional(ctx *gin.Context) {
 	type Params struct {
-		Method string `form:"method" binding:"required"`
-		Url    string `form:"url" binding:"required"`
-		Name   string `form:"name" binding:"required"`
+		Method string  `form:"method" binding:"required"`
+		Url    string  `form:"url" binding:"required"`
+		Name   string  `form:"name" binding:"required"`
+		MenuId *string `form:"menuId"`
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
@@ -26,6 +27,6 @@ func Additional(ctx *gin.Context) {
 		return
 	}
 
-	spider.InterfaceAdditional(params.Method, params.Url, params.Name)
+	spider.InterfaceAdditional(params.Method, params.Url, params.Name, params.MenuId)
 	service.Success()
 }

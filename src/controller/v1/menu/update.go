@@ -10,10 +10,10 @@ import (
 // 更新基本信息
 func Update(ctx *gin.Context) {
 	type Params struct {
-		Id     string `form:"id" binding:"required"`
-		Name   string `form:"name" binding:"required"`
-		Hidden bool   `form:"hidden"`
-		Title  string `form:"title"`
+		Id     string  `form:"id" binding:"required"`
+		Name   string  `form:"name" binding:"required"`
+		Title  string  `form:"title"`
+		Parent *string `form:"parent"`
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
@@ -21,12 +21,6 @@ func Update(ctx *gin.Context) {
 		return
 	}
 
-	rows := spider.MenuQuery(params.Name, "")
-	if len(rows) > 0 {
-		service.ErrorCustom("菜单'" + params.Name + "'已存在")
-		return
-	}
-
-	spider.MenuModify(params.Id, params.Name, params.Hidden, params.Title)
+	spider.MenuModify(params.Id, params.Name, params.Title, params.Parent)
 	service.Success()
 }

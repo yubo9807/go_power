@@ -11,16 +11,15 @@ import (
 func Delete(tableName string) func(ctx *gin.Context) {
 	return func(ctx *gin.Context) {
 		type Params struct {
-			id string `form:"id" binding:"required"`
+			Id string `form:"id" binding:"required"`
 		}
-
 		var params Params
 		if err := ctx.ShouldBind(&params); err != nil {
 			service.ErrorParams()
 			return
 		}
 
-		spider.CommonDelete(tableName, params.id)
+		spider.CommonDelete(tableName, params.Id)
 		service.Success()
 	}
 }

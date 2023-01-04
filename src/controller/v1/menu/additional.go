@@ -10,7 +10,9 @@ import (
 // 添加菜单
 func Additional(ctx *gin.Context) {
 	type Params struct {
-		Name string `form:"name" binding:"required"`
+		Name   string  `form:"name" binding:"required"`
+		Title  string  `form:"title" binding:"required"`
+		Parent *string `form:"parent"`
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
@@ -26,6 +28,6 @@ func Additional(ctx *gin.Context) {
 	}
 
 	// 添加菜单
-	spider.MenuAdditional(params.Name)
+	spider.MenuAdditional(params.Name, params.Title, params.Parent)
 	service.Success()
 }

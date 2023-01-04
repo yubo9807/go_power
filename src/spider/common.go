@@ -2,14 +2,16 @@ package spider
 
 import (
 	"server/src/service"
+	"strconv"
 	"time"
 )
 
 // 删除某张表中的某条数据
 func CommonDelete(tableName, id string) {
+	newId, _ := strconv.ParseInt(id, 10, 64)
 	db := service.DBConnect()
 	defer db.Close()
-	_, err := db.Exec("DELETE FROM ? WHERE id = ?;", tableName, id)
+	_, err := db.Exec(`DELETE FROM `+tableName+` WHERE id = ?;`, newId)
 	if err != nil {
 		panic(err.Error())
 	}

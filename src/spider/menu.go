@@ -64,23 +64,24 @@ func MenuQuery(name, title string) []Menu {
 }
 
 // 添加菜单
-func MenuAdditional(name string) {
+func MenuAdditional(name, title string, parent *string) {
 	db := service.DBConnect()
 	defer db.Close()
 	id := utils.CreateID()
 	createTime := time.Now().Unix()
-	_, err := db.Exec("INSERT INTO menu(id, name, create_time) values(?, ?, ?);", id, name, createTime)
+	_, err := db.Exec("INSERT INTO menu(id, name, title, parent, create_time) values(?, ?, ?, ?, ?);",
+		id, name, title, parent, createTime)
 	if err != nil {
 		panic(err.Error())
 	}
 }
 
 // 修改菜单数据
-func MenuModify(id, name string, hidden bool, title string) {
+func MenuModify(id, name, title string, parent *string) {
 	db := service.DBConnect()
 	defer db.Close()
 	updateTime := time.Now().Unix()
-	_, err := db.Exec(`UPDATE menu SET update_time = ?, name = ?, hidden = ?, title = ? WHERE id = ?;`, updateTime, name, hidden, title, id)
+	_, err := db.Exec(`UPDATE menu SET update_time = ?, name = ?, title = ?, parent = ? WHERE id = ?;`, updateTime, name, title, parent, id)
 	if err != nil {
 		panic(err.Error())
 	}

@@ -19,12 +19,6 @@ func Update(ctx *gin.Context) {
 		return
 	}
 
-	rows := spider.RoleQuery(params.Role)
-	if len(rows) > 0 {
-		service.ErrorCustom("角色" + params.Role + "已存在")
-		return
-	}
-
 	spider.CommonUpdate("element", params.Id, "role", params.Role)
 	service.Success()
 }

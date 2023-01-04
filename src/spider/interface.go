@@ -1,6 +1,7 @@
 package spider
 
 import (
+	"fmt"
 	"server/src/service"
 	"server/src/utils"
 	"time"
@@ -75,23 +76,26 @@ func InterfaceQuery(method, url string) []Interface {
 }
 
 // 修改接口数据
-func InterfaceModify(id, method, url, name string) {
+func InterfaceModify(id, method, url, name string, menuId *string) {
 	db := service.DBConnect()
 	defer db.Close()
 	updateTime := time.Now().Unix()
-	_, err := db.Exec(`UPDATE interface SET update_time = ?, method = ? url = ?, name = ? WHERE id = ?;`, updateTime, method, url, name, id)
+	_, err := db.Exec(`UPDATE interface SET update_time = ?, method = ?, url = ?, name = ?, menu_id = ? WHERE id = ?;`,
+		updateTime, method, url, name, menuId, id)
 	if err != nil {
 		panic(err.Error())
 	}
 }
 
 // 添加接口
-func InterfaceAdditional(method, url, name string) {
+func InterfaceAdditional(method, url, name string, menuId *string) {
 	db := service.DBConnect()
 	defer db.Close()
 	id := utils.CreateID()
+	fmt.Println(id)
 	createTime := time.Now().Unix()
-	_, err := db.Exec("INSERT INTO interface(id, method, url, name create_time) values(?, ?, ?);", id, method, url, name, createTime)
+	_, err := db.Exec("INSERT INTO interface(id, method, url, name, menu_id, create_time) values(?, ?, ?, ?, ?, ?);",
+		id, method, url, name, menuId, createTime)
 	if err != nil {
 		panic(err.Error())
 	}

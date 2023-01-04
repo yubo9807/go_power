@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"math/rand"
 	"strconv"
 	"time"
@@ -13,7 +12,6 @@ func CreateID() int64 {
 	random := strconv.Itoa(NumberRandom(1000000))
 	newStr := StringRandomSort(nowTime + random)
 	num, _ := strconv.ParseInt(newStr, 10, 64)
-	fmt.Println(num)
 	return num
 }
 

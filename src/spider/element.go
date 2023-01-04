@@ -90,7 +90,7 @@ func ElememtAdditional(key, name string) {
 	defer db.Close()
 	id := utils.CreateID()
 	createTime := time.Now().Unix()
-	_, err := db.Exec("INSERT INTO element(id, key, name create_time) values(?, ?, ?);", id, key, name, createTime)
+	_, err := db.Exec("INSERT INTO element(id, key, name, create_time) values(?, ?, ?, ?);", id, key, name, createTime)
 	if err != nil {
 		panic(err.Error())
 	}
