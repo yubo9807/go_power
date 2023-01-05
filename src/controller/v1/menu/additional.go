@@ -16,18 +16,18 @@ func Additional(ctx *gin.Context) {
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
-		service.ErrorParams()
+		service.State.ErrorParams()
 		return
 	}
 
 	// 已存在的菜单不允许添加
-	rows := spider.MenuQuery(params.Name, "")
+	rows := spider.Menu.Query(params.Name, "")
 	if len(rows) > 0 {
-		service.ErrorCustom("菜单'" + params.Name + "'已存在")
+		service.State.ErrorCustom("菜单'" + params.Name + "'已存在")
 		return
 	}
 
 	// 添加菜单
-	spider.MenuAdditional(params.Name, params.Title, params.Parent)
-	service.Success()
+	spider.Menu.Additional(params.Name, params.Title, params.Parent)
+	service.State.Success()
 }

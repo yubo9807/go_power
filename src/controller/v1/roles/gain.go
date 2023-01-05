@@ -8,6 +8,6 @@ import (
 )
 
 func List(ctx *gin.Context) {
-	rows := spider.RoleList()
-	service.SuccessData(rows)
+	rows := spider.Roles.RoleList()
+	service.State.SuccessData(rows)
 }

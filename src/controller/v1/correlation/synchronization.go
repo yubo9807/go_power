@@ -17,12 +17,12 @@ func Synchronization(ctx *gin.Context) {
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
-		service.ErrorParams()
+		service.State.ErrorParams()
 		return
 	}
 
 	newContactIdList := make([]string, 0)
-	rows := spider.CorrelationTableTypeQuery(params.RoleId, params.TableType)
+	rows := spider.Correlation.TableTypeQuery(params.RoleId, params.TableType)
 
 	for i := 0; i < len(params.ContactIdList); i++ {
 		exist := false
@@ -37,7 +37,7 @@ func Synchronization(ctx *gin.Context) {
 		}
 	}
 
-	spider.CorrelationBatchAdditional(params.TableType, params.RoleId, newContactIdList, params.DeleteIdList)
-	service.Success()
+	spider.Correlation.BatchAdditional(params.TableType, params.RoleId, newContactIdList, params.DeleteIdList)
+	service.State.Success()
 
 }

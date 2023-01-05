@@ -6,7 +6,11 @@ import (
 	"time"
 )
 
-type Role struct {
+type rolesTable struct{}
+
+var Roles rolesTable
+
+type RoleColumn struct {
 	Id         string  `json:"id"`
 	Role       string  `json:"role"`
 	CreateTime int     `json:"createTime" db:"create_time"`
@@ -15,10 +19,10 @@ type Role struct {
 }
 
 // 获取角色列表
-func RoleList() []Role {
-	db := service.DBConnect()
+func (r *rolesTable) RoleList() []RoleColumn {
+	db := service.Sql.DBConnect()
 	defer db.Close()
-	var roleList []Role
+	var roleList []RoleColumn
 	err := db.Select(&roleList, "SELECT * FROM roles;")
 	if err != nil {
 		panic(err.Error())
@@ -26,10 +30,10 @@ func RoleList() []Role {
 	return roleList
 }
 
-func RoleQuery(role string) []Role {
-	db := service.DBConnect()
+func (r *rolesTable) Query(role string) []RoleColumn {
+	db := service.Sql.DBConnect()
 	defer db.Close()
-	var roleList []Role
+	var roleList []RoleColumn
 	err := db.Select(&roleList, "SELECT * FROM element WHERE name = '"+role+"';")
 	if err != nil {
 		panic(err.Error())
@@ -38,8 +42,8 @@ func RoleQuery(role string) []Role {
 }
 
 // 添加角色
-func RoleAdditional(role string) {
-	db := service.DBConnect()
+func (r *rolesTable) Additional(role string) {
+	db := service.Sql.DBConnect()
 	defer db.Close()
 	id := utils.CreateID()
 	createTime := time.Now().Unix()
@@ -50,8 +54,8 @@ func RoleAdditional(role string) {
 }
 
 // 修改信息
-func RoleUpdate(id, role, remark string) {
-	db := service.DBConnect()
+func (r *rolesTable) Update(id, role, remark string) {
+	db := service.Sql.DBConnect()
 	defer db.Close()
 	updateTime := time.Now().Unix()
 	_, err := db.Exec(`UPDATE roles SET update_time = ?, role = ?, remark = ? WHERE id = ?;`, updateTime, role, remark, id)

@@ -7,8 +7,12 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+type sqlType struct{}
+
+var Sql sqlType
+
 // 连接数据库
-func DBConnect() *sqlx.DB {
+func (sql *sqlType) DBConnect() *sqlx.DB {
 	db, err := sqlx.Open("mysql", configs.SqlSecret)
 	if err != nil {
 		panic(err.Error())

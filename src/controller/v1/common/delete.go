@@ -15,12 +15,12 @@ func Delete(tableName string) func(ctx *gin.Context) {
 		}
 		var params Params
 		if err := ctx.ShouldBind(&params); err != nil {
-			service.ErrorParams()
+			service.State.ErrorParams()
 			return
 		}
 
-		spider.CommonDelete(tableName, params.Id)
-		spider.CorrelationDeleteCorrelation(tableName, params.Id)
-		service.Success()
+		spider.Common.Delete(tableName, params.Id)
+		spider.Correlation.DeleteCorrelation(tableName, params.Id)
+		service.State.Success()
 	}
 }

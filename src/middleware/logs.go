@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"server/src/service"
 	"server/src/utils"
 	"strings"
 	"time"
@@ -55,7 +56,7 @@ func LogsWrite(ctx *gin.Context, append string) {
 	data, _ := json.Marshal(ctx.Request.Body)
 
 	log.Println(
-		State.RunTime,
+		service.State.RunTime,
 		ctx.ClientIP(),
 		"->",
 		ctx.Request.Host,

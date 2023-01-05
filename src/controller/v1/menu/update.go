@@ -17,18 +17,18 @@ func Update(ctx *gin.Context) {
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
-		service.ErrorParams()
+		service.State.ErrorParams()
 		return
 	}
 
 	bool := detectionStructure(params.Id, params.Parent, make([]string, 0))
 	if params.Parent != nil && params.Id == *params.Parent || bool {
-		service.ErrorCustom("父级菜单指向错误")
+		service.State.ErrorCustom("父级菜单指向错误")
 		return
 	}
 
-	spider.MenuModify(params.Id, params.Name, params.Title, params.Parent)
-	service.Success()
+	spider.Menu.Modify(params.Id, params.Name, params.Title, params.Parent)
+	service.State.Success()
 }
 
 // 结构检查，防止出现循环指向
@@ -39,7 +39,7 @@ func detectionStructure(id string, parent *string, collect []string) bool {
 	}
 
 	check := false
-	rows := spider.MenuStructureQuery(parent)
+	rows := spider.Menu.StructureQuery(parent)
 	collect = append(collect, rows[0].Id)
 	for i := 0; i < len(collect); i++ {
 		if collect[i] == id {

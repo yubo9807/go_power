@@ -16,12 +16,12 @@ func List(ctx *gin.Context) {
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
-		service.ErrorParams()
+		service.State.ErrorParams()
 		return
 	}
 
-	rows1 := spider.InterfaceList(params.MenuId, params.Url)
-	rows2 := spider.InterfacePowerListModule(params.RoleId, params.MenuId)
+	rows1 := spider.Interface.List(params.MenuId, params.Url)
+	rows2 := spider.Interface.PowerListModule(params.RoleId, params.MenuId)
 
 	for i := 0; i < len(rows1); i++ {
 		for j := 0; j < len(rows2); j++ {
@@ -33,9 +33,9 @@ func List(ctx *gin.Context) {
 		}
 	}
 
-	data := []spider.Interface{}
+	data := []spider.InterfaceColumn{}
 	data = append(data, rows1...)
-	service.SuccessData(data)
+	service.State.SuccessData(data)
 }
 
 // 获取具有权限的所有接口
@@ -48,12 +48,12 @@ func PowerListAll(ctx *gin.Context) {
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
-		service.ErrorParams()
+		service.State.ErrorParams()
 		return
 	}
 
-	rows := spider.InterfacePowerList(params.RoleId, params.Method, params.Url)
-	data := []spider.Interface{}
+	rows := spider.Interface.PowerList(params.RoleId, params.Method, params.Url)
+	data := []spider.InterfaceColumn{}
 	data = append(data, rows...)
-	service.SuccessData(data)
+	service.State.SuccessData(data)
 }

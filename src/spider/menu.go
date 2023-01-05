@@ -6,7 +6,11 @@ import (
 	"time"
 )
 
-type Menu struct {
+type menuTable struct{}
+
+var Menu menuTable
+
+type MenuColumn struct {
 	Id         string  `json:"id"`
 	Name       string  `json:"name"`
 	CreateTime int     `json:"createTime" db:"create_time"`
@@ -21,10 +25,10 @@ type Menu struct {
 }
 
 // 获取所有菜单
-func MenuList(title string) []Menu {
-	db := service.DBConnect()
+func (m *menuTable) List(title string) []MenuColumn {
+	db := service.Sql.DBConnect()
 	defer db.Close()
-	var menuList []Menu
+	var menuList []MenuColumn
 	err := db.Select(&menuList, "SELECT * FROM menu WHERE title LIKE '%"+title+"%';")
 	if err != nil {
 		panic(err.Error())
@@ -33,10 +37,10 @@ func MenuList(title string) []Menu {
 }
 
 // 获取有权限的菜单
-func MenuPowerList(roleId string) []Menu {
-	db := service.DBConnect()
+func (m *menuTable) PowerList(roleId string) []MenuColumn {
+	db := service.Sql.DBConnect()
 	defer db.Close()
-	var menuList []Menu
+	var menuList []MenuColumn
 	err := db.Select(&menuList, `SELECT
 	t1.*, t2.id AS 'correlation_id', t3.id AS 'role_id'
 	FROM menu AS t1
@@ -52,10 +56,10 @@ func MenuPowerList(roleId string) []Menu {
 }
 
 // 查询菜单
-func MenuQuery(name, title string) []Menu {
-	db := service.DBConnect()
+func (m *menuTable) Query(name, title string) []MenuColumn {
+	db := service.Sql.DBConnect()
 	defer db.Close()
-	var menuList []Menu
+	var menuList []MenuColumn
 	err := db.Select(&menuList, "SELECT * FROM menu WHERE name LIKE '%"+name+"%' AND title LIKE '%"+title+"%';")
 	if err != nil {
 		panic(err.Error())
@@ -64,10 +68,10 @@ func MenuQuery(name, title string) []Menu {
 }
 
 // 结构查询
-func MenuStructureQuery(parent *string) []Menu {
-	db := service.DBConnect()
+func (m *menuTable) StructureQuery(parent *string) []MenuColumn {
+	db := service.Sql.DBConnect()
 	defer db.Close()
-	var menuList []Menu
+	var menuList []MenuColumn
 	err := db.Select(&menuList, "SELECT * FROM menu WHERE id = "+*parent+";")
 	if err != nil {
 		panic(err.Error())
@@ -76,8 +80,8 @@ func MenuStructureQuery(parent *string) []Menu {
 }
 
 // 添加菜单
-func MenuAdditional(name, title string, parent *string) {
-	db := service.DBConnect()
+func (m *menuTable) Additional(name, title string, parent *string) {
+	db := service.Sql.DBConnect()
 	defer db.Close()
 	id := utils.CreateID()
 	createTime := time.Now().Unix()
@@ -89,8 +93,8 @@ func MenuAdditional(name, title string, parent *string) {
 }
 
 // 修改菜单数据
-func MenuModify(id, name, title string, parent *string) {
-	db := service.DBConnect()
+func (m *menuTable) Modify(id, name, title string, parent *string) {
+	db := service.Sql.DBConnect()
 	defer db.Close()
 	updateTime := time.Now().Unix()
 	_, err := db.Exec(`UPDATE menu SET update_time = ?, name = ?, title = ?, parent = ? WHERE id = ?;`, updateTime, name, title, parent, id)

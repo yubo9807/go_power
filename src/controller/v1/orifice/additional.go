@@ -17,16 +17,16 @@ func Additional(ctx *gin.Context) {
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
-		service.ErrorParams()
+		service.State.ErrorParams()
 		return
 	}
 
-	rows := spider.InterfaceQuery(params.Method, params.Url)
+	rows := spider.Interface.Query(params.Method, params.Url)
 	if len(rows) > 0 {
-		service.ErrorCustom("接口已存在")
+		service.State.ErrorCustom("接口已存在")
 		return
 	}
 
-	spider.InterfaceAdditional(params.Method, params.Url, params.Name, params.MenuId)
-	service.Success()
+	spider.Interface.Additional(params.Method, params.Url, params.Name, params.MenuId)
+	service.State.Success()
 }

@@ -17,10 +17,10 @@ func Update(ctx *gin.Context) {
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
-		service.ErrorParams()
+		service.State.ErrorParams()
 		return
 	}
 
-	spider.InterfaceModify(params.Id, params.Method, params.Url, params.Name, params.MenuId)
-	service.Success()
+	spider.Interface.Modify(params.Id, params.Method, params.Url, params.Name, params.MenuId)
+	service.State.Success()
 }

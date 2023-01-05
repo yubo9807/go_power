@@ -6,10 +6,14 @@ import (
 	"time"
 )
 
+type commonType struct{}
+
+var Common commonType
+
 // 删除某张表中的某条数据
-func CommonDelete(tableName, id string) {
+func (c *commonType) Delete(tableName, id string) {
 	newId, _ := strconv.ParseInt(id, 10, 64)
-	db := service.DBConnect()
+	db := service.Sql.DBConnect()
 	defer db.Close()
 	_, err := db.Exec(`DELETE FROM `+tableName+` WHERE id = ?;`, newId)
 	if err != nil {
@@ -18,8 +22,8 @@ func CommonDelete(tableName, id string) {
 }
 
 // 修改 menu_id 指向为空
-func CommonDeleteMenuId(menuId string) {
-	db := service.DBConnect()
+func (c *commonType) DeleteMenuId(menuId string) {
+	db := service.Sql.DBConnect()
 	defer db.Close()
 	updateTime := time.Now().Unix()
 	_, err1 := db.Exec(`UPDATE interface SET update_time = ?, menu_id = NULL WHERE menu_id = ?;`, updateTime, menuId)

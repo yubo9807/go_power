@@ -13,10 +13,10 @@ func Delete(ctx *gin.Context) {
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
-		service.ErrorParams()
+		service.State.ErrorParams()
 		return
 	}
 
-	spider.CommonDelete("roles", params.Id)
-	service.Success()
+	spider.Common.Delete("roles", params.Id)
+	service.State.Success()
 }

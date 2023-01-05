@@ -6,7 +6,11 @@ import (
 	"time"
 )
 
-type Elememt struct {
+type elementTable struct{}
+
+var Elememt elementTable
+
+type ElememtColumn struct {
 	Id         string  `json:"id"`
 	Key        string  `json:"key"`
 	Name       string  `json:"name"`
@@ -20,10 +24,10 @@ type Elememt struct {
 }
 
 // 获取所有接口
-func ElememtList(menuId string) []Elememt {
-	db := service.DBConnect()
+func (e *elementTable) List(menuId string) []ElememtColumn {
+	db := service.Sql.DBConnect()
 	defer db.Close()
-	var elementList []Elememt
+	var elementList []ElememtColumn
 	joint := "IS NULL"
 	if menuId != "" {
 		joint = "= '" + menuId + "'"
@@ -37,10 +41,10 @@ func ElememtList(menuId string) []Elememt {
 
 // 获取有权限的元素
 // @param point == "" 时查询公共模块元素
-func ElememtPowerList(roleId, menuId string) []Elememt {
-	db := service.DBConnect()
+func (e *elementTable) PowerList(roleId, menuId string) []ElememtColumn {
+	db := service.Sql.DBConnect()
 	defer db.Close()
-	var elementList []Elememt
+	var elementList []ElememtColumn
 	joint := "IS NULL"
 	if menuId != "" {
 		joint = "= '" + menuId + "'"
@@ -62,10 +66,10 @@ func ElememtPowerList(roleId, menuId string) []Elememt {
 }
 
 // 查询元素
-func ElememtQuery(key, name string) []Elememt {
-	db := service.DBConnect()
+func (e *elementTable) Query(key, name string) []ElememtColumn {
+	db := service.Sql.DBConnect()
 	defer db.Close()
-	var elementList []Elememt
+	var elementList []ElememtColumn
 	err := db.Select(&elementList, "SELECT * FROM element WHERE 'key' = '"+key+"' AND 'name' LIKE '%"+name+"%';")
 	if err != nil {
 		panic(err.Error())
@@ -74,8 +78,8 @@ func ElememtQuery(key, name string) []Elememt {
 }
 
 // 修改元素数据
-func ElememtModify(id, key, name string) {
-	db := service.DBConnect()
+func (e *elementTable) Modify(id, key, name string) {
+	db := service.Sql.DBConnect()
 	defer db.Close()
 	updateTime := time.Now().Unix()
 	_, err := db.Exec(`UPDATE element SET update_time = ?, key = ? name = ? WHERE id = ?;`, updateTime, key, name, id)
@@ -85,8 +89,8 @@ func ElememtModify(id, key, name string) {
 }
 
 // 添加元素
-func ElememtAdditional(key, name string, menuId *string) {
-	db := service.DBConnect()
+func (e *elementTable) Additional(key, name string, menuId *string) {
+	db := service.Sql.DBConnect()
 	defer db.Close()
 	id := utils.CreateID()
 	createTime := time.Now().Unix()

@@ -15,12 +15,12 @@ func List(ctx *gin.Context) {
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
-		service.ErrorParams()
+		service.State.ErrorParams()
 		return
 	}
 
-	rows1 := spider.ElememtList(params.MenuId)
-	rows2 := spider.ElememtPowerList(params.RoleId, params.MenuId)
+	rows1 := spider.Elememt.List(params.MenuId)
+	rows2 := spider.Elememt.PowerList(params.RoleId, params.MenuId)
 
 	for i := 0; i < len(rows1); i++ {
 		for j := 0; j < len(rows2); j++ {
@@ -32,7 +32,7 @@ func List(ctx *gin.Context) {
 		}
 	}
 
-	data := []spider.Elememt{}
+	data := []spider.ElememtColumn{}
 	data = append(data, rows1...)
-	service.SuccessData(data)
+	service.State.SuccessData(data)
 }
