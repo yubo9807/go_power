@@ -22,7 +22,7 @@ func Route(r *gin.RouterGroup) {
 
 	// 菜单
 	r.POST("/menu/add", menu.Additional)
-	r.POST("/menu/delete", common.Delete(tableNameMenu))
+	r.POST("/menu/delete", menu.Delete)
 	r.POST("/menu/modify", menu.Update)
 	r.GET("/menu/list", menu.List)
 

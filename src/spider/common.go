@@ -17,14 +17,17 @@ func CommonDelete(tableName, id string) {
 	}
 }
 
-// 修改某张表的某一个字段
-// 该表中必须包含 update_time 字段（表设计规范约束）
-func CommonUpdate(tableName, id, key, value string) {
+// 修改 menu_id 指向为空
+func CommonDeleteMenuId(menuId string) {
 	db := service.DBConnect()
 	defer db.Close()
 	updateTime := time.Now().Unix()
-	_, err := db.Exec(`UPDATE ? SET update_time = ?, ? = ? WHERE id = ?;`, tableName, updateTime, key, value, id)
-	if err != nil {
-		panic(err.Error())
+	_, err1 := db.Exec(`UPDATE interface SET update_time = ?, menu_id = NULL WHERE menu_id = ?;`, updateTime, menuId)
+	_, err2 := db.Exec(`UPDATE element SET update_time = ?, menu_id = NULL WHERE menu_id = ?;`, updateTime, menuId)
+	if err1 != nil {
+		panic(err1.Error())
+	}
+	if err2 != nil {
+		panic(err2.Error())
 	}
 }
