@@ -39,7 +39,7 @@ func InterfaceList(menuId, url string) []Interface {
 
 // 获取有权限的接口（按模块）
 // @param point == "" 时查询公共模块接口
-func InterfacePowerList(roleId, menuId string) []Interface {
+func InterfacePowerListModule(roleId, menuId string) []Interface {
 	db := service.DBConnect()
 	defer db.Close()
 	var interfaceList []Interface
@@ -57,26 +57,6 @@ func InterfacePowerList(roleId, menuId string) []Interface {
 	LEFT JOIN roles AS t3
 	ON t2.role_id = t3.id
 	WHERE t2.table_type = 'interface' AND t3.id = '`+roleId+"' AND t1.menu_id "+joint+";")
-	if err != nil {
-		panic(err.Error())
-	}
-	return interfaceList
-}
-
-func InterfacePowerListAll(roleId string) []Interface {
-	db := service.DBConnect()
-	defer db.Close()
-	var interfaceList []Interface
-	err := db.Select(&interfaceList, `SELECT
-	t1.*,
-	t2.id AS 'correlation_id',
-	t3.id AS 'role_id'
-	FROM interface AS t1
-	LEFT JOIN correlation AS t2
-	ON t1.id = t2.table_id
-	LEFT JOIN roles AS t3
-	ON t2.role_id = t3.id
-	WHERE t2.table_type = 'interface' AND t3.id = '`+roleId+"';")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -119,4 +99,24 @@ func InterfaceAdditional(method, url, name string, menuId *string) {
 	if err != nil {
 		panic(err.Error())
 	}
+}
+
+// 获取具有权限的接口
+// method, url 不为空时进行精确查询
+func InterfacePowerList(roleId, method, url string) []Interface {
+	joint := ";"
+	if method != "" && url != "" {
+		joint = " AND method = '" + method + "' AND url = '" + url + "';"
+	}
+	db := service.DBConnect()
+	defer db.Close()
+	var interfaceList []Interface
+	err := db.Select(&interfaceList, `SELECT t1.* FROM interface AS t1
+	LEFT JOIN correlation AS t2 ON t1.id = t2.table_id
+	LEFT JOIN roles AS t3 ON t2.role_id = t3.id
+	WHERE t2.table_type = 'interface' AND t3.id = '`+roleId+`'`+joint)
+	if err != nil {
+		panic(err.Error())
+	}
+	return interfaceList
 }

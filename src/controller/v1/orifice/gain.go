@@ -21,7 +21,7 @@ func List(ctx *gin.Context) {
 	}
 
 	rows1 := spider.InterfaceList(params.MenuId, params.Url)
-	rows2 := spider.InterfacePowerList(params.RoleId, params.MenuId)
+	rows2 := spider.InterfacePowerListModule(params.RoleId, params.MenuId)
 
 	for i := 0; i < len(rows1); i++ {
 		for j := 0; j < len(rows2); j++ {
@@ -39,9 +39,12 @@ func List(ctx *gin.Context) {
 }
 
 // 获取具有权限的所有接口
+// method, url 都传会进行精确查询，不传则回去所有
 func PowerListAll(ctx *gin.Context) {
 	type Params struct {
 		RoleId string `form:"roleId" binding:"required"`
+		Method string `form:"method"`
+		Url    string `form:"url"`
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
@@ -49,7 +52,7 @@ func PowerListAll(ctx *gin.Context) {
 		return
 	}
 
-	rows := spider.InterfacePowerListAll(params.RoleId)
+	rows := spider.InterfacePowerList(params.RoleId, params.Method, params.Url)
 	data := []spider.Interface{}
 	data = append(data, rows...)
 	service.SuccessData(data)
