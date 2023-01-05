@@ -21,6 +21,34 @@ func Update(ctx *gin.Context) {
 		return
 	}
 
+	bool := detectionStructure(params.Id, params.Parent, make([]string, 0))
+	if params.Parent != nil && params.Id == *params.Parent || bool {
+		service.ErrorCustom("父级菜单指向错误")
+		return
+	}
+
 	spider.MenuModify(params.Id, params.Name, params.Title, params.Parent)
 	service.Success()
+}
+
+// 结构检查，防止出现循环指向
+// 检测到返回 true，没有则返回 false
+func detectionStructure(id string, parent *string, collect []string) bool {
+	if parent == nil {
+		return false
+	}
+
+	check := false
+	rows := spider.MenuStructureQuery(parent)
+	collect = append(collect, rows[0].Id)
+	for i := 0; i < len(collect); i++ {
+		if collect[i] == id {
+			check = true
+			break
+		}
+	}
+	if rows[0].Parent != nil {
+		check = detectionStructure(id, rows[0].Parent, collect)
+	}
+	return check
 }

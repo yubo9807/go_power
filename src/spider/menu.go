@@ -63,6 +63,18 @@ func MenuQuery(name, title string) []Menu {
 	return menuList
 }
 
+// 结构查询
+func MenuStructureQuery(parent *string) []Menu {
+	db := service.DBConnect()
+	defer db.Close()
+	var menuList []Menu
+	err := db.Select(&menuList, "SELECT * FROM menu WHERE id = "+*parent+";")
+	if err != nil {
+		panic(err.Error())
+	}
+	return menuList
+}
+
 // 添加菜单
 func MenuAdditional(name, title string, parent *string) {
 	db := service.DBConnect()
