@@ -9,7 +9,7 @@ import (
 // 生成ID
 func CreateID() int64 {
 	nowTime := strconv.FormatInt(time.Now().UnixMilli(), 10)
-	random := strconv.Itoa(NumberRandom(1000000))
+	random := strconv.Itoa(NumberRandom(100000))
 	newStr := StringRandomSort(nowTime + random)
 	num, _ := strconv.ParseInt(newStr, 10, 64)
 	return num

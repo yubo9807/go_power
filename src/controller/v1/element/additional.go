@@ -9,9 +9,9 @@ import (
 
 func Additional(ctx *gin.Context) {
 	type Params struct {
-		Method string `form:"method" binding:"required"`
-		Key    string `form:"key" binding:"required"`
-		Name   string `form:"name" binding:"required"`
+		Key    string  `form:"key" binding:"required"`
+		Name   string  `form:"name" binding:"required"`
+		MenuId *string `form:"menuId"`
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
@@ -25,6 +25,6 @@ func Additional(ctx *gin.Context) {
 		return
 	}
 
-	spider.ElememtAdditional(params.Key, params.Name)
+	spider.ElememtAdditional(params.Key, params.Name, params.MenuId)
 	service.Success()
 }

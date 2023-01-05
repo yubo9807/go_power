@@ -66,7 +66,7 @@ func ElememtQuery(key, name string) []Elememt {
 	db := service.DBConnect()
 	defer db.Close()
 	var elementList []Elememt
-	err := db.Select(&elementList, "SELECT * FROM element WHERE key = '"+key+"' AND name LIKE '%"+name+"%';")
+	err := db.Select(&elementList, "SELECT * FROM element WHERE 'key' = '"+key+"' AND 'name' LIKE '%"+name+"%';")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -85,12 +85,13 @@ func ElememtModify(id, key, name string) {
 }
 
 // 添加元素
-func ElememtAdditional(key, name string) {
+func ElememtAdditional(key, name string, menuId *string) {
 	db := service.DBConnect()
 	defer db.Close()
 	id := utils.CreateID()
 	createTime := time.Now().Unix()
-	_, err := db.Exec("INSERT INTO element(id, key, name, create_time) values(?, ?, ?, ?);", id, key, name, createTime)
+	_, err := db.Exec("INSERT INTO element(id, `key`, `name`, menu_id, create_time) values(?, ?, ?, ?, ?);",
+		id, key, name, menuId, createTime)
 	if err != nil {
 		panic(err.Error())
 	}
