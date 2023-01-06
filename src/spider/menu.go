@@ -80,24 +80,24 @@ func (m *menuTable) StructureQuery(parent *string) []MenuColumn {
 }
 
 // 添加菜单
-func (m *menuTable) Additional(name, title string, parent *string) {
+func (m *menuTable) Additional(name, title string, hidden bool, parent *string) {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	id := utils.CreateID()
 	createTime := time.Now().Unix()
-	_, err := db.Exec("INSERT INTO menu(id, name, title, parent, create_time) values(?, ?, ?, ?, ?);",
-		id, name, title, parent, createTime)
+	_, err := db.Exec("INSERT INTO menu(id, name, title, hidden, parent, create_time) values(?, ?, ?, ?, ?, ?);",
+		id, name, title, hidden, parent, createTime)
 	if err != nil {
 		panic(err.Error())
 	}
 }
 
 // 修改菜单数据
-func (m *menuTable) Modify(id, name, title string, parent *string) {
+func (m *menuTable) Modify(id, name, title string, hidden bool, parent *string) {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	updateTime := time.Now().Unix()
-	_, err := db.Exec(`UPDATE menu SET update_time = ?, name = ?, title = ?, parent = ? WHERE id = ?;`, updateTime, name, title, parent, id)
+	_, err := db.Exec(`UPDATE menu SET update_time = ?, name = ?, title = ?, hidden = ?, parent = ? WHERE id = ?;`, updateTime, name, title, hidden, parent, id)
 	if err != nil {
 		panic(err.Error())
 	}

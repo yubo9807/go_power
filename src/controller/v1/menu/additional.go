@@ -12,6 +12,7 @@ func Additional(ctx *gin.Context) {
 	type Params struct {
 		Name   string  `form:"name" binding:"required"`
 		Title  string  `form:"title" binding:"required"`
+		Hidden bool    `form:"hidden"`
 		Parent *string `form:"parent"`
 	}
 	var params Params
@@ -28,6 +29,6 @@ func Additional(ctx *gin.Context) {
 	}
 
 	// 添加菜单
-	spider.Menu.Additional(params.Name, params.Title, params.Parent)
+	spider.Menu.Additional(params.Name, params.Title, params.Hidden, params.Parent)
 	service.State.Success()
 }

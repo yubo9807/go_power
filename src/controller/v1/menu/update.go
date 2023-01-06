@@ -13,6 +13,7 @@ func Update(ctx *gin.Context) {
 		Id     string  `form:"id" binding:"required"`
 		Name   string  `form:"name" binding:"required"`
 		Title  string  `form:"title"`
+		Hidden bool    `form:"hidden"`
 		Parent *string `form:"parent"`
 	}
 	var params Params
@@ -27,7 +28,7 @@ func Update(ctx *gin.Context) {
 		return
 	}
 
-	spider.Menu.Modify(params.Id, params.Name, params.Title, params.Parent)
+	spider.Menu.Modify(params.Id, params.Name, params.Title, params.Hidden, params.Parent)
 	service.State.Success()
 }
 
