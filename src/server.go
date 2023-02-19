@@ -11,10 +11,10 @@ import (
 func server() *gin.Engine {
 
 	app := gin.Default()
+	app.Use(middleware.Core)
 
 	base := app.Group("/permissions")
 	base.Use(middleware.Recover)
-	base.Use(middleware.Core)
 	base.Use(middleware.Logs)
 	base.Use(middleware.BodyDispose)
 
