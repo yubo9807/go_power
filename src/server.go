@@ -36,7 +36,7 @@ func static() *gin.Engine {
 
 func main() {
 
-	// go static().Run(":20010")
-	server().Run(":20020")
+	go server().Run(":20020")
+	static().Run(":20030")
 
 }

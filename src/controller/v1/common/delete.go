@@ -19,8 +19,8 @@ func Delete(tableName string) func(ctx *gin.Context) {
 			return
 		}
 
-		spider.Common.Delete(tableName, params.Id)
 		spider.Correlation.DeleteCorrelation(tableName, params.Id)
+		spider.Common.Delete(tableName, params.Id)
 		service.State.Success()
 	}
 }

@@ -36,7 +36,7 @@ func Route(r *gin.RouterGroup) {
 	r.POST("/element/add", element.Additional)
 	r.POST("/element/delete", common.Delete(tableNameElement))
 	r.POST("/element/modify", element.Update)
-	r.GET("element/list", element.List)
+	r.GET("/element/list", element.List)
 
 	// 关联表，权限控制
 	r.POST("/correlation/synchronization", correlation.Synchronization)
@@ -44,7 +44,7 @@ func Route(r *gin.RouterGroup) {
 	// 后端拿到该角色有权限的接口，做中间件拦截
 	r.GET("/interface/powerlist", orifice.PowerListAll)
 
-	// 角色
+	// 业务系统进行角色同步
 	r.GET("/roles/list", roles.List)
 	r.POST("/roles/add", roles.Additional)
 	r.POST("/roles/modify", roles.Update)
