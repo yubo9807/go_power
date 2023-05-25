@@ -2,7 +2,7 @@
 .git
 .idea
 .vscode
-configs/power.go
+config.yml
 
 logs
 server

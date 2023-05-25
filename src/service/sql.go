@@ -13,7 +13,7 @@ var Sql sqlType
 
 // 连接数据库
 func (sql *sqlType) DBConnect() *sqlx.DB {
-	db, err := sqlx.Open("mysql", configs.SqlSecret)
+	db, err := sqlx.Open("mysql", configs.Config.SqlSecret)
 	if err != nil {
 		panic(err.Error())
 	}

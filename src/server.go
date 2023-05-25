@@ -1,8 +1,10 @@
 package main
 
 import (
+	"server/configs"
 	v1 "server/src/controller/v1"
 	"server/src/middleware"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,7 +15,7 @@ func server() *gin.Engine {
 	app := gin.Default()
 	app.Use(middleware.Core)
 
-	base := app.Group("/permissions")
+	base := app.Group(configs.Config.Prefix)
 	base.Use(middleware.Recover)
 	base.Use(middleware.Logs)
 	base.Use(middleware.BodyDispose)
@@ -36,7 +38,9 @@ func static() *gin.Engine {
 
 func main() {
 
-	go server().Run(":20020")
-	static().Run(":20030")
+	// go server().Run(":20020")
+	// static().Run(":20030")
 
+	port := ":" + strconv.Itoa(configs.Config.Port)
+	server().Run(port)
 }
