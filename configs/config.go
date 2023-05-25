@@ -9,7 +9,7 @@ import (
 type ConfigType struct {
 	Port      int
 	Prefix    string
-	SqlSecret string
+	SqlSecret string `yaml:"sqlSecret"`
 }
 
 var Config ConfigType
@@ -17,7 +17,7 @@ var Config ConfigType
 const template = `
 prefix: "/permissions"  # 路由前缀
 port: 8080  # 启动端口
-sqlSecret: "root:password@tcp(0.0.0.0:3306)/permissions"  # sql 密匙
+sqlSecret: "root:password@tcp(0.0.0.0:3306)/tablesName"  # sql 密匙
 `
 
 func init() {
