@@ -1,6 +1,7 @@
 package spider
 
 import (
+	"server/configs"
 	"server/src/service"
 	"strconv"
 	"time"
@@ -26,8 +27,8 @@ func (c *commonType) DeleteMenuId(menuId string) {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	updateTime := time.Now().Unix()
-	_, err1 := db.Exec(`UPDATE interface SET update_time = ?, menu_id = NULL WHERE menu_id = ?;`, updateTime, menuId)
-	_, err2 := db.Exec(`UPDATE element SET update_time = ?, menu_id = NULL WHERE menu_id = ?;`, updateTime, menuId)
+	_, err1 := db.Exec("UPDATE "+configs.Table_Interface+" SET update_time = ?, menu_id = NULL WHERE menu_id = ?;", updateTime, menuId)
+	_, err2 := db.Exec("UPDATE "+configs.Table_Element+" SET update_time = ?, menu_id = NULL WHERE menu_id = ?;", updateTime, menuId)
 	if err1 != nil {
 		panic(err1.Error())
 	}

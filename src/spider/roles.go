@@ -1,6 +1,7 @@
 package spider
 
 import (
+	"server/configs"
 	"server/src/service"
 	"server/src/utils"
 	"time"
@@ -23,18 +24,7 @@ func (r *rolesTable) RoleList() []RoleColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	var roleList []RoleColumn
-	err := db.Select(&roleList, "SELECT * FROM roles;")
-	if err != nil {
-		panic(err.Error())
-	}
-	return roleList
-}
-
-func (r *rolesTable) Query(role string) []RoleColumn {
-	db := service.Sql.DBConnect()
-	defer db.Close()
-	var roleList []RoleColumn
-	err := db.Select(&roleList, "SELECT * FROM element WHERE name = '"+role+"';")
+	err := db.Select(&roleList, "SELECT * FROM "+configs.Table_Roles+";")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -47,7 +37,7 @@ func (r *rolesTable) Additional(role string) {
 	defer db.Close()
 	id := utils.CreateID()
 	createTime := time.Now().Unix()
-	_, err := db.Exec("INSERT INTO roles(id, role, create_time) values(?, ?, ?);", id, role, createTime)
+	_, err := db.Exec("INSERT INTO "+configs.Table_Roles+"(id, role, create_time) values(?, ?, ?);", id, role, createTime)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -58,7 +48,7 @@ func (r *rolesTable) Update(id, role, remark string) {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	updateTime := time.Now().Unix()
-	_, err := db.Exec(`UPDATE roles SET update_time = ?, role = ?, remark = ? WHERE id = ?;`, updateTime, role, remark, id)
+	_, err := db.Exec("UPDATE "+configs.Table_Roles+" SET update_time = ?, role = ?, remark = ? WHERE id = ?;", updateTime, role, remark, id)
 	if err != nil {
 		panic(err.Error())
 	}

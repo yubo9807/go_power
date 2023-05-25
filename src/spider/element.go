@@ -1,6 +1,7 @@
 package spider
 
 import (
+	"server/configs"
 	"server/src/service"
 	"server/src/utils"
 	"time"
@@ -23,7 +24,7 @@ type ElememtColumn struct {
 	Selected      bool    `json:"selected"`
 }
 
-// 获取所有接口
+// 获取所有元素
 func (e *elementTable) List(menuId string) []ElememtColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
@@ -32,7 +33,7 @@ func (e *elementTable) List(menuId string) []ElememtColumn {
 	if menuId != "" {
 		joint = "= '" + menuId + "'"
 	}
-	err := db.Select(&elementList, "SELECT * FROM element WHERE menu_id "+joint+";")
+	err := db.Select(&elementList, "SELECT * FROM "+configs.Table_Element+" WHERE menu_id "+joint+";")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -53,10 +54,10 @@ func (e *elementTable) PowerList(roleId, menuId string) []ElememtColumn {
 	t1.*,
 	t2.id AS 'correlation_id',
 	t3.id AS 'role_id'
-	FROM element AS t1
-	LEFT JOIN correlation AS t2
+	FROM `+configs.Table_Element+` AS t1
+	LEFT JOIN `+configs.Table_Correlation+` AS t2
 	ON t1.id = t2.table_id
-	LEFT JOIN roles AS t3
+	LEFT JOIN `+configs.Table_Roles+` AS t3
 	ON t2.role_id = t3.id
 	WHERE t2.table_type = 'element' AND t3.id = '`+roleId+"' AND t1.menu_id "+joint+";")
 	if err != nil {
@@ -70,7 +71,7 @@ func (e *elementTable) Query(key, name string) []ElememtColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	var elementList []ElememtColumn
-	err := db.Select(&elementList, "SELECT * FROM element WHERE 'key' = '"+key+"' AND 'name' LIKE '%"+name+"%';")
+	err := db.Select(&elementList, "SELECT * FROM "+configs.Table_Element+" WHERE 'key' = '"+key+"' AND 'name' LIKE '%"+name+"%';")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -82,7 +83,7 @@ func (e *elementTable) Modify(id, key, name string) {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	updateTime := time.Now().Unix()
-	_, err := db.Exec(`UPDATE element SET update_time = ?, key = ? name = ? WHERE id = ?;`, updateTime, key, name, id)
+	_, err := db.Exec("UPDATE "+configs.Table_Element+" SET update_time = ?, key = ? name = ? WHERE id = ?;", updateTime, key, name, id)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -94,7 +95,7 @@ func (e *elementTable) Additional(key, name string, menuId *string) {
 	defer db.Close()
 	id := utils.CreateID()
 	createTime := time.Now().Unix()
-	_, err := db.Exec("INSERT INTO element(id, `key`, `name`, menu_id, create_time) values(?, ?, ?, ?, ?);",
+	_, err := db.Exec("INSERT INTO "+configs.Table_Element+"(id, `key`, `name`, menu_id, create_time) values(?, ?, ?, ?, ?);",
 		id, key, name, menuId, createTime)
 	if err != nil {
 		panic(err.Error())

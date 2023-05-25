@@ -1,6 +1,7 @@
 package spider
 
 import (
+	"server/configs"
 	"server/src/service"
 	"server/src/utils"
 	"time"
@@ -25,7 +26,7 @@ func (c *correlationTable) Additional(roleId, tableId, tableType string) {
 	defer db.Close()
 	id := utils.CreateID()
 	createTime := time.Now().Unix()
-	_, err := db.Exec("INSERT INTO correlation(id, role_id, table_id, table_type, create_time) values(?, ?, ?, ?, ?);",
+	_, err := db.Exec("INSERT INTO "+configs.Table_Correlation+"(id, role_id, table_id, table_type, create_time) values(?, ?, ?, ?, ?);",
 		id, roleId, tableId, tableType, createTime)
 	if err != nil {
 		panic(err.Error())
@@ -41,7 +42,7 @@ func (c *correlationTable) BatchAdditional(tableType, roleId string, tableIdList
 	for i := 0; i < len(tableIdList); i++ {
 		id := utils.CreateID()
 		createTime := time.Now().Unix()
-		_, err := db.Exec("INSERT INTO correlation(id, role_id, table_id, table_type, create_time) values(?, ?, ?, ?, ?);",
+		_, err := db.Exec("INSERT INTO "+configs.Table_Correlation+"(id, role_id, table_id, table_type, create_time) values(?, ?, ?, ?, ?);",
 			id, roleId, tableIdList[i], tableType, createTime)
 		if err != nil {
 			panic(err.Error())
@@ -50,7 +51,7 @@ func (c *correlationTable) BatchAdditional(tableType, roleId string, tableIdList
 
 	// 删除
 	for i := 0; i < len(delTableIdList); i++ {
-		_, err := db.Exec("DELETE FROM correlation WHERE table_id = ? AND role_id = ?;", delTableIdList[i], roleId)
+		_, err := db.Exec("DELETE FROM "+configs.Table_Correlation+" WHERE table_id = ? AND role_id = ?;", delTableIdList[i], roleId)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -61,7 +62,7 @@ func (c *correlationTable) BatchAdditional(tableType, roleId string, tableIdList
 func (c *correlationTable) DeleteCorrelation(tableType, tableId string) {
 	db := service.Sql.DBConnect()
 	defer db.Close()
-	_, err := db.Exec("DELETE FROM correlation WHERE table_type = ? AND table_id = ?;", tableType, tableId)
+	_, err := db.Exec("DELETE FROM "+configs.Table_Correlation+" WHERE table_type = ? AND table_id = ?;", tableType, tableId)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -71,7 +72,7 @@ func (c *correlationTable) DeleteCorrelation(tableType, tableId string) {
 func (c *correlationTable) DeleteCorrelationRoles(roleId string) {
 	db := service.Sql.DBConnect()
 	defer db.Close()
-	_, err := db.Exec("DELETE FROM correlation WHERE role_id = ?;", roleId)
+	_, err := db.Exec("DELETE FROM "+configs.Table_Correlation+" WHERE role_id = ?;", roleId)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -82,7 +83,7 @@ func (c *correlationTable) TableTypeQuery(roleId, tableType string) []Correlatio
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	var correlation []CorrelationColumn
-	err := db.Select(&correlation, "SELECT * FROM correlation WHERE role_id = '"+roleId+"' AND table_type = '"+tableType+"';")
+	err := db.Select(&correlation, "SELECT * FROM "+configs.Table_Correlation+" WHERE role_id = '"+roleId+"' AND table_type = '"+tableType+"';")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -94,7 +95,7 @@ func (c *correlationTable) Query(roleId, tableId, tableType string) []Correlatio
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	var correlation []CorrelationColumn
-	err := db.Select(&correlation, "SELECT * FROM correlation WHERE role_id = "+roleId+" AND table_id = "+tableId+" AND table_type = '"+tableType+"';")
+	err := db.Select(&correlation, "SELECT * FROM "+configs.Table_Correlation+" WHERE role_id = "+roleId+" AND table_id = "+tableId+" AND table_type = '"+tableType+"';")
 	if err != nil {
 		panic(err.Error())
 	}

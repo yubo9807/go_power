@@ -1,6 +1,7 @@
 package menu
 
 import (
+	"server/configs"
 	"server/src/service"
 	"server/src/spider"
 
@@ -18,9 +19,8 @@ func Delete(ctx *gin.Context) {
 		return
 	}
 
-	tableName := "menu"
 	spider.Common.DeleteMenuId(params.Id)
-	spider.Correlation.DeleteCorrelation(tableName, params.Id)
-	spider.Common.Delete(tableName, params.Id)
+	spider.Correlation.DeleteCorrelation(configs.Table_Menu, params.Id)
+	spider.Common.Delete(configs.Table_Menu, params.Id)
 	service.State.Success()
 }

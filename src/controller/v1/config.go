@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"server/configs"
 	"server/src/controller/v1/common"
 	"server/src/controller/v1/correlation"
 	"server/src/controller/v1/element"
@@ -9,13 +10,6 @@ import (
 	"server/src/controller/v1/roles"
 
 	"github.com/gin-gonic/gin"
-)
-
-const (
-	tableNameMenu      = "menu"
-	tableNameInterface = "interface"
-	tableNameElement   = "element"
-	tableNameRoles     = "roles"
 )
 
 func Route(r *gin.RouterGroup) {
@@ -28,13 +22,13 @@ func Route(r *gin.RouterGroup) {
 
 	// 接口
 	r.POST("/interface/add", orifice.Additional)
-	r.POST("/interface/delete", common.Delete(tableNameInterface))
+	r.POST("/interface/delete", common.Delete(configs.Table_Interface))
 	r.POST("/interface/modify", orifice.Update)
 	r.GET("/interface/list", orifice.List)
 
 	// 元素
 	r.POST("/element/add", element.Additional)
-	r.POST("/element/delete", common.Delete(tableNameElement))
+	r.POST("/element/delete", common.Delete(configs.Table_Element))
 	r.POST("/element/modify", element.Update)
 	r.GET("/element/list", element.List)
 

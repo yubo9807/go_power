@@ -2,6 +2,7 @@ package spider
 
 import (
 	"fmt"
+	"server/configs"
 	"server/src/service"
 	"server/src/utils"
 	"time"
@@ -34,7 +35,7 @@ func (i *interfaceTable) List(menuId, url string) []InterfaceColumn {
 	if menuId != "" {
 		joint = "= '" + menuId + "'"
 	}
-	err := db.Select(&interfaceList, "SELECT * FROM interface WHERE menu_id "+joint+" AND url LIKE '%"+url+"%';")
+	err := db.Select(&interfaceList, "SELECT * FROM "+configs.Table_Interface+" WHERE menu_id "+joint+" AND url LIKE '%"+url+"%';")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -55,10 +56,10 @@ func (i *interfaceTable) PowerListModule(roleId, menuId string) []InterfaceColum
 	t1.*,
 	t2.id AS 'correlation_id',
 	t3.id AS 'role_id'
-	FROM interface AS t1
-	LEFT JOIN correlation AS t2
+	FROM `+configs.Table_Interface+` AS t1
+	LEFT JOIN `+configs.Table_Correlation+` AS t2
 	ON t1.id = t2.table_id
-	LEFT JOIN roles AS t3
+	LEFT JOIN `+configs.Table_Roles+` AS t3
 	ON t2.role_id = t3.id
 	WHERE t2.table_type = 'interface' AND t3.id = '`+roleId+"' AND t1.menu_id "+joint+";")
 	if err != nil {
@@ -72,7 +73,7 @@ func (i *interfaceTable) Query(method, url string) []InterfaceColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	var interfaceList []InterfaceColumn
-	err := db.Select(&interfaceList, "SELECT * FROM interface WHERE method = '"+method+"' AND url LIKE '%"+url+"%';")
+	err := db.Select(&interfaceList, "SELECT * FROM "+configs.Table_Interface+" WHERE method = '"+method+"' AND url LIKE '%"+url+"%';")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -84,7 +85,7 @@ func (i *interfaceTable) Modify(id, method, url, name string, menuId *string) {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	updateTime := time.Now().Unix()
-	_, err := db.Exec(`UPDATE interface SET update_time = ?, method = ?, url = ?, name = ?, menu_id = ? WHERE id = ?;`,
+	_, err := db.Exec("UPDATE "+configs.Table_Interface+" SET update_time = ?, method = ?, url = ?, name = ?, menu_id = ? WHERE id = ?;",
 		updateTime, method, url, name, menuId, id)
 	if err != nil {
 		panic(err.Error())
@@ -98,7 +99,7 @@ func (i *interfaceTable) Additional(method, url, name string, menuId *string) {
 	id := utils.CreateID()
 	fmt.Println(id)
 	createTime := time.Now().Unix()
-	_, err := db.Exec("INSERT INTO interface(id, method, url, name, menu_id, create_time) values(?, ?, ?, ?, ?, ?);",
+	_, err := db.Exec("INSERT INTO "+configs.Table_Interface+"(id, method, url, name, menu_id, create_time) values(?, ?, ?, ?, ?, ?);",
 		id, method, url, name, menuId, createTime)
 	if err != nil {
 		panic(err.Error())
@@ -115,9 +116,9 @@ func (i *interfaceTable) PowerList(roleId, method, url string) []InterfaceColumn
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	var interfaceList []InterfaceColumn
-	err := db.Select(&interfaceList, `SELECT t1.* FROM interface AS t1
-	LEFT JOIN correlation AS t2 ON t1.id = t2.table_id
-	LEFT JOIN roles AS t3 ON t2.role_id = t3.id
+	err := db.Select(&interfaceList, `SELECT t1.* FROM `+configs.Table_Interface+` AS t1
+	LEFT JOIN `+configs.Table_Correlation+` AS t2 ON t1.id = t2.table_id
+	LEFT JOIN `+configs.Table_Roles+` AS t3 ON t2.role_id = t3.id
 	WHERE t2.table_type = 'interface' AND t3.id = '`+roleId+`'`+joint)
 	if err != nil {
 		panic(err.Error())
