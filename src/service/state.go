@@ -49,6 +49,12 @@ func (state *StateType) ErrorUnauthorized() {
 	state.Message = "unauthorized"
 }
 
+// token 失效
+func (state *StateType) ErrorTokenFailure() {
+	state.Code = 405
+	state.Message = "token failure"
+}
+
 // 自定义错误消息
 func (state *StateType) ErrorCustom(msg string) {
 	state.Code = 500

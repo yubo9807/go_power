@@ -8,11 +8,15 @@ import (
 	"server/src/controller/v1/menu"
 	"server/src/controller/v1/orifice"
 	"server/src/controller/v1/roles"
+	"server/src/middleware"
 
 	"github.com/gin-gonic/gin"
 )
 
 func Route(r *gin.RouterGroup) {
+
+	// 授权验证
+	r.Use(middleware.Authorization)
 
 	// 菜单
 	r.POST("/menu/add", menu.Additional)

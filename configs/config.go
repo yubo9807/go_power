@@ -1,7 +1,6 @@
 package configs
 
 import (
-	"fmt"
 	"os"
 
 	"gopkg.in/yaml.v2"
@@ -12,6 +11,9 @@ type ConfigType struct {
 	Prefix      string
 	SqlSecret   string `yaml:"sqlSecret"`
 	TablePrefix string `yaml:"tablesPrefix"`
+
+	Username string
+	Passwrod string
 }
 
 var Config ConfigType
@@ -22,6 +24,9 @@ port: 8080  # 启动端口
 sqlSecret: "root:password@tcp(0.0.0.0:3306)/tablesName"  # sql 密匙
 
 tablesPrefix: "s_"  # 数据库表前缀，防止与业务表冲突
+
+username: power   # 用户名
+passwrod: 12345  # 密码
 `
 
 var (
@@ -50,7 +55,4 @@ func init() {
 	Table_Element = Config.TablePrefix + Table_Element
 	Table_Roles = Config.TablePrefix + Table_Roles
 	Table_Correlation = Config.TablePrefix + Table_Correlation
-
-	fmt.Println(Config)
-	fmt.Println(Table_Roles)
 }

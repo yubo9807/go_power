@@ -3,6 +3,7 @@ package main
 import (
 	"server/configs"
 	v1 "server/src/controller/v1"
+	"server/src/controller/v1/user"
 	"server/src/middleware"
 	"strconv"
 
@@ -19,6 +20,8 @@ func server() *gin.Engine {
 	base.Use(middleware.Recover)
 	base.Use(middleware.Logs)
 	base.Use(middleware.BodyDispose)
+
+	base.POST("/user/signIn", user.SignIn)
 
 	v1.Route(base.Group("/v1/api"))
 
