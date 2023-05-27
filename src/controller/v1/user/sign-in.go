@@ -10,7 +10,7 @@ import (
 func SignIn(ctx *gin.Context) {
 	type Params struct {
 		Username string `form:"username" binding:"required"`
-		Passwrod string `form:"passwrod" binding:"required"`
+		Password string `form:"password" binding:"required"`
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
@@ -18,10 +18,10 @@ func SignIn(ctx *gin.Context) {
 		return
 	}
 
-	if params.Username == configs.Config.Username && params.Passwrod == configs.Config.Passwrod {
+	if params.Username == configs.Config.Username && params.Password == configs.Config.Password {
 		userInfo := make(map[string]interface{})
 		userInfo["username"] = params.Username
-		userInfo["passwrod"] = params.Passwrod
+		userInfo["password"] = params.Password
 		tokenString := service.Jwt.Publish(userInfo)
 		service.State.SuccessData(tokenString)
 	} else {

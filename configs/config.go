@@ -13,7 +13,7 @@ type ConfigType struct {
 	TablePrefix string `yaml:"tablesPrefix"`
 
 	Username string
-	Passwrod string
+	Password string
 }
 
 var Config ConfigType
@@ -21,12 +21,12 @@ var Config ConfigType
 const template = `
 prefix: "/permissions"  # 路由前缀
 port: 8080  # 启动端口
-sqlSecret: "root:password@tcp(0.0.0.0:3306)/tablesName"  # sql 密匙
+sqlSecret: "user:password@tcp(0.0.0.0:3306)/database"  # sql 密匙
 
 tablesPrefix: "s_"  # 数据库表前缀，防止与业务表冲突
 
 username: power   # 用户名
-passwrod: 12345  # 密码
+password: 12345  # 密码
 `
 
 var (
