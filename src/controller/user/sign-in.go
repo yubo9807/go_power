@@ -21,7 +21,6 @@ func SignIn(ctx *gin.Context) {
 	if params.Username == configs.Config.Username && params.Password == configs.Config.Password {
 		userInfo := make(map[string]interface{})
 		userInfo["username"] = params.Username
-		userInfo["password"] = params.Password
 		tokenString := service.Jwt.Publish(userInfo)
 		service.State.SuccessData(tokenString)
 	} else {

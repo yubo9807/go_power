@@ -2,8 +2,8 @@ package main
 
 import (
 	"server/configs"
+	"server/src/controller/user"
 	v1 "server/src/controller/v1"
-	"server/src/controller/v1/user"
 	"server/src/middleware"
 	"strconv"
 
