@@ -13,7 +13,12 @@ type jwtType struct{}
 
 var Jwt jwtType
 
-const secret = "1h1dshi2r"
+var secret = createSecret()
+
+func createSecret() string {
+	num := utils.CreateID()
+	return utils.IntToBase(num, 36)
+}
 
 // 颁发 JWT
 func (j *jwtType) Publish(info map[string]interface{}) string {
