@@ -19,6 +19,7 @@ type MenuColumn struct {
 	Title      *string `json:"title"`
 	Hidden     bool    `json:"hidden"`
 	Parent     *string `json:"parent"`
+	Count      int     `json:"count"`
 
 	CorrelationId *string `json:"correlationId" db:"correlation_id"`
 	RoleId        *string `json:"roleId" db:"role_id"`
@@ -84,10 +85,25 @@ func (m *menuTable) StructureQuery(parent *string) []MenuColumn {
 func (m *menuTable) Additional(name, title string, hidden bool, parent *string) {
 	db := service.Sql.DBConnect()
 	defer db.Close()
+	maxCount := 0
+	{
+		// 查询最大排序
+		type menuCount struct {
+			Count int
+		}
+		var menuCountList []menuCount
+		err := db.Select(&menuCountList, "SELECT MAX(`count`) AS count FROM "+configs.Table_Menu+";")
+		if err != nil {
+			panic(err.Error())
+		}
+		if len(menuCountList) > 0 {
+			maxCount = menuCountList[0].Count + 1
+		}
+	}
 	id := utils.CreateID()
 	createTime := time.Now().Unix()
-	_, err := db.Exec("INSERT INTO "+configs.Table_Menu+"(id, name, title, hidden, parent, create_time) values(?, ?, ?, ?, ?, ?);",
-		id, name, title, hidden, parent, createTime)
+	_, err := db.Exec("INSERT INTO "+configs.Table_Menu+"(id, name, title, hidden, parent, count, create_time) values(?, ?, ?, ?, ?, ?, ?);",
+		id, name, title, hidden, parent, maxCount, createTime)
 	if err != nil {
 		panic(err.Error())
 	}
