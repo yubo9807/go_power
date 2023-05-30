@@ -31,7 +31,7 @@ func (m *menuTable) List(title string) []MenuColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	var menuList []MenuColumn
-	err := db.Select(&menuList, "SELECT * FROM "+configs.Table_Menu+" WHERE title LIKE '%"+title+"%';")
+	err := db.Select(&menuList, "SELECT * FROM "+configs.Table_Menu+" WHERE title LIKE '%"+title+"%' ORDER BY count ASC;")
 	if err != nil {
 		panic(err.Error())
 	}
