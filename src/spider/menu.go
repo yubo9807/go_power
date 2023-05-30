@@ -119,3 +119,15 @@ func (m *menuTable) Modify(id, name, title string, hidden bool, parent *string) 
 		panic(err.Error())
 	}
 }
+
+// 修改菜单排序
+func (m *menuTable) ModifySort(id1, id2 string) {
+	db := service.Sql.DBConnect()
+	defer db.Close()
+	_, err := db.Exec(`UPDATE ` + configs.Table_Menu + ` AS t1 JOIN ` + configs.Table_Menu + ` AS t2
+	ON t1.id = '` + id1 + `' AND t2.id = '` + id2 + `'
+	SET t1.count = t2.count, t2.count = t1.count;`)
+	if err != nil {
+		panic(err.Error())
+	}
+}

@@ -23,6 +23,7 @@ func Route(r *gin.RouterGroup) {
 	r.POST("/menu/delete", menu.Delete)
 	r.POST("/menu/modify", menu.Update)
 	r.GET("/menu/list", menu.List)
+	r.POST("/menu/sort", menu.UpdateSort)
 
 	// 接口
 	r.POST("/interface/add", orifice.Additional)

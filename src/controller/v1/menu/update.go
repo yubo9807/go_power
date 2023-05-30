@@ -53,3 +53,19 @@ func detectionStructure(id string, parent *string, collect []string) bool {
 	}
 	return check
 }
+
+// 更新排序
+func UpdateSort(ctx *gin.Context) {
+	type Params struct {
+		Id1 string `form:"id1" binding:"required"`
+		Id2 string `form:"id2" binding:"required"`
+	}
+	var params Params
+	if err := ctx.ShouldBind(&params); err != nil {
+		service.State.ErrorParams()
+		return
+	}
+
+	spider.Menu.ModifySort(params.Id1, params.Id2)
+	service.State.Success()
+}
