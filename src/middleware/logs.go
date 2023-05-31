@@ -7,7 +7,6 @@ import (
 	"os"
 	"server/src/service"
 	"server/src/utils"
-	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -40,8 +39,8 @@ func Logs(ctx *gin.Context) {
 
 	ctx.Next()
 
-	response := writer.body.String()
-	LogsWrite(ctx, "\nResponse: "+response)
+	// response := writer.body.String()
+	LogsWrite(ctx, "")
 }
 
 func LogsWrite(ctx *gin.Context, append string) {
@@ -51,19 +50,14 @@ func LogsWrite(ctx *gin.Context, append string) {
 	log.SetOutput(logSrc)
 	log.SetPrefix("\n")
 
-	header, _ := json.Marshal(ctx.Request.Header)
-	headerStr := strings.ReplaceAll(strings.ReplaceAll(string(header), "\\", ""), "\"\"", "\"")
 	data, _ := json.Marshal(ctx.Request.Body)
 
 	log.Println(
 		service.State.RunTime,
 		ctx.ClientIP(),
-		"->",
-		ctx.Request.Host,
 		ctx.Request.Method,
 		ctx.Request.RequestURI,
-		"\nData: "+string(data),
-		"\nHeaders: "+headerStr,
+		"Data: "+string(data),
 		append,
 	)
 }
