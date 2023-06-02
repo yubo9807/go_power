@@ -9,9 +9,10 @@ import (
 
 func Update(ctx *gin.Context) {
 	type Params struct {
-		Id   string `form:"id" binding:"required"`
-		Key  string `form:"key" binding:"required"`
-		Name string `form:"name" binding:"required"`
+		Id     string `form:"id" binding:"required"`
+		Key    string `form:"key" binding:"required"`
+		Name   string `form:"name" binding:"required"`
+		MenuId string `form:"menuId"`
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
@@ -19,6 +20,6 @@ func Update(ctx *gin.Context) {
 		return
 	}
 
-	spider.Elememt.Modify(params.Id, params.Key, params.Name)
+	spider.Elememt.Modify(params.Id, params.Key, params.Name, params.MenuId)
 	service.State.Success()
 }
