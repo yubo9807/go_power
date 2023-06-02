@@ -39,12 +39,11 @@ func List(ctx *gin.Context) {
 }
 
 // 获取具有权限的所有接口
-// method, url 都传会进行精确查询，不传则回去所有
-func PowerListAll(ctx *gin.Context) {
+func Authority(ctx *gin.Context) {
 	type Params struct {
 		RoleId string `form:"roleId" binding:"required"`
-		Method string `form:"method"`
-		Url    string `form:"url"`
+		Method string `form:"method" binding:"required"`
+		Url    string `form:"url" binding:"required"`
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
@@ -55,5 +54,9 @@ func PowerListAll(ctx *gin.Context) {
 	rows := spider.Interface.PowerList(params.RoleId, params.Method, params.Url)
 	data := []spider.InterfaceColumn{}
 	data = append(data, rows...)
-	service.State.SuccessData(data)
+	if len(data) > 0 {
+		service.State.SuccessData(data[0])
+	} else {
+		service.State.ErrorCustom("permission error")
+	}
 }
