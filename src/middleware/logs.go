@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"bytes"
-	"encoding/json"
+	"io/ioutil"
 	"log"
 	"os"
 	"server/src/service"
@@ -30,7 +30,13 @@ func init() {
 	}
 }
 
+var currentData string
+
 func Logs(ctx *gin.Context) {
+	data, _ := ctx.GetRawData() // body 数据只能被读一次，读完即删
+	currentData = string(data)
+	ctx.Request.Body = ioutil.NopCloser(bytes.NewBuffer(data)) // 回写
+
 	writer := responseWriter{
 		ctx.Writer,
 		bytes.NewBuffer([]byte{}),
@@ -50,16 +56,15 @@ func LogsWrite(ctx *gin.Context, append string) {
 	log.SetOutput(logSrc)
 	log.SetPrefix("\n")
 
-	data, _ := json.Marshal(ctx.Request.Body)
-
 	log.Println(
 		service.State.RunTime,
 		ctx.ClientIP(),
 		ctx.Request.Method,
 		ctx.Request.RequestURI,
-		"body:"+string(data),
+		utils.If(currentData == "", "", "\nbody:"+string(currentData)),
 		append,
 	)
+	currentData = "" // 清理内存
 }
 
 func LogsGetSrc(filename string) *os.File {
