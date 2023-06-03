@@ -22,6 +22,7 @@ func SignIn(ctx *gin.Context) {
 		userInfo := make(map[string]interface{})
 		userInfo["username"] = params.Username
 		tokenString := service.Jwt.Publish(userInfo)
+		service.Jwt.StorageSetToken(params.Username, tokenString)
 		service.State.SuccessData(tokenString)
 	} else {
 		service.State.ErrorCustom("用户名或密码错误")

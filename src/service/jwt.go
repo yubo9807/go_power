@@ -13,11 +13,17 @@ type jwtType struct{}
 
 var Jwt jwtType
 
-var secret = createSecret()
+var secret = "lifby9m2"
+var secretMap = make(map[string]string) // 利用本地缓存充当 session
 
-func createSecret() string {
-	num := utils.CreateID()
-	return utils.IntToBase(num, 36)
+// 储存偷啃（在修改密码后重新执行，原先的偷啃将无效）
+func (j *jwtType) StorageSetToken(key, tokenString string) {
+	secretMap[key] = tokenString
+}
+
+// 获取缓存偷啃
+func (j *jwtType) StorageGetToken(key string) string {
+	return secretMap[key]
 }
 
 // 颁发 JWT

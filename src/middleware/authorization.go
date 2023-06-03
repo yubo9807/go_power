@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"server/configs"
 	"server/src/service"
 
@@ -21,13 +22,14 @@ func Authorization(ctx *gin.Context) {
 		return
 	}
 
-	_, err := service.Jwt.Verify(auth)
-	if err != nil {
+	info, err := service.Jwt.Verify(auth)
+	cacheToken := fmt.Sprintf("%v", info["username"])
+
+	// 校验失败，或与缓存中的偷啃不一致
+	if err != nil || service.Jwt.StorageGetToken(cacheToken) != auth {
 		service.State.ErrorTokenFailure()
 		ctx.Abort()
 		return
 	}
-
-	// ctx.Next()
 
 }
