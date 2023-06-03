@@ -57,7 +57,7 @@ func LogsWrite(ctx *gin.Context, append string) {
 		ctx.ClientIP(),
 		ctx.Request.Method,
 		ctx.Request.RequestURI,
-		"Data: "+string(data),
+		"body:"+string(data),
 		append,
 	)
 }
