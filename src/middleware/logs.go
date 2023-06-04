@@ -30,11 +30,11 @@ func init() {
 	}
 }
 
-var currentData string
+var currentBody string
 
 func Logs(ctx *gin.Context) {
 	data, _ := ctx.GetRawData() // body 数据只能被读一次，读完即删
-	currentData = string(data)
+	currentBody = string(data)
 	ctx.Request.Body = ioutil.NopCloser(bytes.NewBuffer(data)) // 回写
 
 	writer := responseWriter{
@@ -69,11 +69,14 @@ func LogsWrite(ctx *gin.Context, append string) {
 		ctx.ClientIP(),
 		ctx.Request.Method,
 		ctx.Request.RequestURI,
-		utils.If(currentData == "", "", "\nbody:"+string(currentData)),
-		utils.If(sql == "", "", "\nsqls:"+sql),
+		utils.If(currentBody == "", "", "\nbody:"+currentBody),
+		sql,
 		append,
 	)
-	currentData = "" // 清理内存
+
+	// 清理内存，避免出现过多数据占用
+	currentBody = ""
+	service.State.Init()
 }
 
 func LogsGetSrc(filename string) *os.File {
