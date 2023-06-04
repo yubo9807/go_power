@@ -53,6 +53,7 @@ func LogsWrite(ctx *gin.Context, append string) {
 	filename := utils.DateFormater(time.Now(), "YYYY-MM-DD")
 
 	logSrc := LogsGetSrc("logs/" + filename + ".log")
+	log.SetFlags(log.Lmicroseconds | log.Ldate)
 	log.SetOutput(logSrc)
 	log.SetPrefix("\n")
 
