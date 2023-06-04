@@ -11,6 +11,7 @@ type StateType struct {
 	Data    any
 	Message string
 	RunTime string
+	Sqls    [][2]string
 }
 
 var State = StateType{}
@@ -24,6 +25,7 @@ func (state *StateType) Init() {
 	state.Message = "unknown error"
 	state.RunTime = startTime.String()
 	state.Data = nil
+	state.Sqls = state.Sqls[:0]
 }
 
 // 返回统一格式
@@ -75,4 +77,10 @@ func (state *StateType) Success() {
 
 func (state *StateType) GetData() interface{} {
 	return state.Data
+}
+
+// 记录 sql
+func (state *StateType) RecordSql(query, argsStr string) {
+	item := [2]string{query, argsStr}
+	State.Sqls = append(State.Sqls, item)
 }

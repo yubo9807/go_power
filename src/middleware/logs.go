@@ -56,12 +56,21 @@ func LogsWrite(ctx *gin.Context, append string) {
 	log.SetOutput(logSrc)
 	log.SetPrefix("\n")
 
+	sql := ""
+	lastIndex := len(service.State.Sqls) - 1
+	for i, val := range service.State.Sqls {
+		mark := utils.If(i == lastIndex, "└─ ", "├─ ")
+		args := utils.If(val[1] == "", "", "\n  └─ "+val[1])
+		sql += "\n" + mark + val[0] + args
+	}
+
 	log.Println(
 		service.State.RunTime,
 		ctx.ClientIP(),
 		ctx.Request.Method,
 		ctx.Request.RequestURI,
 		utils.If(currentData == "", "", "\nbody:"+string(currentData)),
+		utils.If(sql == "", "", "\nsqls:"+sql),
 		append,
 	)
 	currentData = "" // 清理内存
