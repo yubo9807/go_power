@@ -37,7 +37,8 @@ func (r *rolesTable) Additional(role string) {
 	defer db.Close()
 	id := utils.CreateID()
 	createTime := time.Now().Unix()
-	_, err := db.Exec("INSERT INTO "+configs.Table_Roles+"(id, role, create_time) values(?, ?, ?);", id, role, createTime)
+	_, err := db.Exec("INSERT INTO "+configs.Table_Roles+"(id, role, create_time) values(?, ?, ?);",
+		id, role, createTime)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -48,7 +49,8 @@ func (r *rolesTable) Update(id, role, remark string) {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	updateTime := time.Now().Unix()
-	_, err := db.Exec("UPDATE "+configs.Table_Roles+" SET update_time = ?, role = ?, remark = ? WHERE id = ?;", updateTime, role, remark, id)
+	_, err := db.Exec("UPDATE "+configs.Table_Roles+" SET update_time = ?, role = ?, remark = ? WHERE id = ?;",
+		updateTime, role, remark, id)
 	if err != nil {
 		panic(err.Error())
 	}

@@ -114,7 +114,8 @@ func (m *menuTable) Modify(id, name, title string, hidden bool, parent *string) 
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	updateTime := time.Now().Unix()
-	_, err := db.Exec("UPDATE "+configs.Table_Menu+" SET update_time = ?, name = ?, title = ?, hidden = ?, parent = ? WHERE id = ?;", updateTime, name, title, hidden, parent, id)
+	_, err := db.Exec("UPDATE "+configs.Table_Menu+" SET update_time = ?, name = ?, title = ?, hidden = ?, parent = ? WHERE id = ?;",
+		updateTime, name, title, hidden, parent, id)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -124,9 +125,8 @@ func (m *menuTable) Modify(id, name, title string, hidden bool, parent *string) 
 func (m *menuTable) ModifySort(id1, id2 string) {
 	db := service.Sql.DBConnect()
 	defer db.Close()
-	_, err := db.Exec(`UPDATE ` + configs.Table_Menu + ` AS t1 JOIN ` + configs.Table_Menu + ` AS t2
-	ON t1.id = '` + id1 + `' AND t2.id = '` + id2 + `'
-	SET t1.count = t2.count, t2.count = t1.count;`)
+	_, err := db.Exec(`UPDATE `+configs.Table_Menu+` AS t1 JOIN `+configs.Table_Menu+` AS t2 ON t1.id = ? AND t2.id = ?
+	SET t1.count = t2.count, t2.count = t1.count;`, id1, id2)
 	if err != nil {
 		panic(err.Error())
 	}
