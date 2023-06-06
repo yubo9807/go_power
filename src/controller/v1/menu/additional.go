@@ -27,6 +27,7 @@ func Additional(ctx *gin.Context) {
 
 	wg.Add(1)
 	go func() {
+		defer func() { mu.Unlock(); wg.Done() }()
 		mu.Lock()
 
 		// 已存在的菜单不允许添加
@@ -37,11 +38,7 @@ func Additional(ctx *gin.Context) {
 		}
 		// 添加菜单
 		spider.Menu.Additional(params.Name, params.Title, params.Hidden, params.Parent)
-
-		wg.Done()
-		mu.Unlock()
+		service.State.Success()
 	}()
 	wg.Wait()
-
-	service.State.Success()
 }
