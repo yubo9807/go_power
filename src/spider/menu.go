@@ -62,7 +62,7 @@ func (m *menuTable) Query(name, title string) []MenuColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	var menuList []MenuColumn
-	err := db.Select(&menuList, "SELECT * FROM "+configs.Table_Menu+" WHERE name LIKE '%"+name+"%' AND title LIKE '%"+title+"%';")
+	err := db.Select(&menuList, "SELECT * FROM "+configs.Table_Menu+" WHERE name = '"+name+"' AND title LIKE '%"+title+"%';")
 	if err != nil {
 		panic(err.Error())
 	}
