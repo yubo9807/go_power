@@ -28,6 +28,12 @@ func (state *StateType) Init() {
 	state.Sqls = state.Sqls[:0]
 }
 
+// 清理内存（所有中间件结束后执行）
+func (state *StateType) Clean() {
+	state.Data = nil
+	state.Sqls = state.Sqls[:0]
+}
+
 // 返回统一格式
 func (state *StateType) Result(ctx *gin.Context) {
 	state.RunTime = time.Since(startTime).String()

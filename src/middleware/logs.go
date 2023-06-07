@@ -77,7 +77,7 @@ func LogsWrite(ctx *gin.Context, append string) {
 
 	// 清理内存，避免出现过多数据占用
 	currentBody = ""
-	service.State.Init()
+	service.State.Clean()
 }
 
 func LogsGetSrc(filename string) *os.File {
