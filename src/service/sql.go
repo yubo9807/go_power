@@ -58,5 +58,6 @@ func record(query string, args ...interface{}) {
 		partition := utils.If(i == lastIndex, "", ", ")
 		argsStr += fmt.Sprintf("%v", val) + partition
 	}
-	State.RecordSql(sqlStr, argsStr)
+	fmt.Println(sqlStr)
+	// State.RecordSql(sqlStr, argsStr)
 }

@@ -18,18 +18,18 @@ func Update(ctx *gin.Context) {
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
-		service.State.ErrorParams()
+		service.State.ErrorParams(ctx)
 		return
 	}
 
 	bool := detectionStructure(params.Id, params.Parent, make([]string, 0))
 	if params.Parent != nil && params.Id == *params.Parent || bool {
-		service.State.ErrorCustom("父级菜单指向错误")
+		service.State.ErrorCustom(ctx, "父级菜单指向错误")
 		return
 	}
 
 	spider.Menu.Modify(params.Id, params.Name, params.Title, params.Hidden, params.Parent)
-	service.State.Success()
+	service.State.Success(ctx)
 }
 
 // 结构检查，防止出现循环指向
@@ -62,10 +62,10 @@ func UpdateSort(ctx *gin.Context) {
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
-		service.State.ErrorParams()
+		service.State.ErrorParams(ctx)
 		return
 	}
 
 	spider.Menu.ModifySort(params.Id1, params.Id2)
-	service.State.Success()
+	service.State.Success(ctx)
 }

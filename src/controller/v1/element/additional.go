@@ -15,16 +15,16 @@ func Additional(ctx *gin.Context) {
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
-		service.State.ErrorParams()
+		service.State.ErrorParams(ctx)
 		return
 	}
 
 	rows := spider.Elememt.Query(params.Key, "")
 	if len(rows) > 0 {
-		service.State.ErrorCustom("元素已存在")
+		service.State.ErrorCustom(ctx, "元素已存在")
 		return
 	}
 
 	spider.Elememt.Additional(params.Key, params.Name, params.MenuId)
-	service.State.Success()
+	service.State.Success(ctx)
 }

@@ -7,7 +7,7 @@ import (
 )
 
 func BodyDispose(ctx *gin.Context) {
-	service.State.Init()
+	service.State.InitState(ctx)
 
 	ctx.Next()
 

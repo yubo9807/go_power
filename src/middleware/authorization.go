@@ -17,7 +17,7 @@ func Authorization(ctx *gin.Context) {
 
 	auth := ctx.GetHeader("Authorization")
 	if auth == "" {
-		service.State.ErrorUnauthorized()
+		service.State.ErrorUnauthorized(ctx)
 		ctx.Abort()
 		return
 	}
@@ -27,7 +27,7 @@ func Authorization(ctx *gin.Context) {
 
 	// 校验失败，或与缓存中的偷啃不一致
 	if err != nil || service.Jwt.StorageGetToken(cacheToken) != auth {
-		service.State.ErrorTokenFailure()
+		service.State.ErrorTokenFailure(ctx)
 		ctx.Abort()
 		return
 	}

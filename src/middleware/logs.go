@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"bytes"
-	"io/ioutil"
 	"log"
 	"os"
 	"server/src/service"
@@ -30,12 +29,7 @@ func init() {
 	}
 }
 
-var currentBody string
-
 func Logs(ctx *gin.Context) {
-	data, _ := ctx.GetRawData() // body 数据只能被读一次，读完即删
-	currentBody = string(data)
-	ctx.Request.Body = ioutil.NopCloser(bytes.NewBuffer(data)) // 回写
 
 	writer := responseWriter{
 		ctx.Writer,
@@ -57,27 +51,27 @@ func LogsWrite(ctx *gin.Context, append string) {
 	log.SetOutput(logSrc)
 	log.SetPrefix("\n")
 
+	state := service.State.GetStateStore(ctx)
 	sql := ""
-	lastIndex := len(service.State.Sqls) - 1
-	for i, val := range service.State.Sqls {
+	lastIndex := len(state.Sqls) - 1
+	for i, val := range state.Sqls {
 		mark := utils.If(i == lastIndex, "└─ ", "├─ ")
 		args := utils.If(val[1] == "", "", "\n  └─ "+val[1])
 		sql += "\n" + mark + val[0] + args
 	}
 
+	body := string(state.Body)
+
 	log.Println(
-		service.State.RunTime,
+		// service.State.RunTime,
 		ctx.ClientIP(),
 		ctx.Request.Method,
 		ctx.Request.RequestURI,
-		utils.If(currentBody == "", "", "\nbody:"+currentBody),
+		utils.If(body == "", "", "\nbody:"+body),
 		sql,
 		append,
 	)
 
-	// 清理内存，避免出现过多数据占用
-	currentBody = ""
-	service.State.Clean()
 }
 
 func LogsGetSrc(filename string) *os.File {

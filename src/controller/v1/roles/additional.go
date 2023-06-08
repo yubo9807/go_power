@@ -14,10 +14,10 @@ func Additional(ctx *gin.Context) {
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
-		service.State.ErrorParams()
+		service.State.ErrorParams(ctx)
 		return
 	}
 
 	spider.Roles.Additional(params.Role)
-	service.State.Success()
+	service.State.Success(ctx)
 }

@@ -13,11 +13,11 @@ func Delete(ctx *gin.Context) {
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
-		service.State.ErrorParams()
+		service.State.ErrorParams(ctx)
 		return
 	}
 
 	spider.Correlation.DeleteCorrelationRoles(params.Id)
 	spider.Common.Delete("roles", params.Id)
-	service.State.Success()
+	service.State.Success(ctx)
 }

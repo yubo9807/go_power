@@ -16,7 +16,7 @@ func List(ctx *gin.Context) {
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
-		service.State.ErrorParams()
+		service.State.ErrorParams(ctx)
 		return
 	}
 
@@ -35,7 +35,7 @@ func List(ctx *gin.Context) {
 
 	data := []spider.InterfaceColumn{}
 	data = append(data, rows1...)
-	service.State.SuccessData(data)
+	service.State.SuccessData(ctx, data)
 }
 
 // 获取具有权限的所有接口
@@ -47,7 +47,7 @@ func Authority(ctx *gin.Context) {
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
-		service.State.ErrorParams()
+		service.State.ErrorParams(ctx)
 		return
 	}
 
@@ -55,8 +55,8 @@ func Authority(ctx *gin.Context) {
 	data := []spider.InterfaceColumn{}
 	data = append(data, rows...)
 	if len(data) > 0 {
-		service.State.SuccessData(data[0])
+		service.State.SuccessData(ctx, data[0])
 	} else {
-		service.State.ErrorCustom("permission error")
+		service.State.ErrorCustom(ctx, "permission error")
 	}
 }

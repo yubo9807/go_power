@@ -15,10 +15,10 @@ func Update(ctx *gin.Context) {
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
-		service.State.ErrorParams()
+		service.State.ErrorParams(ctx)
 		return
 	}
 
 	spider.Roles.Update(params.Id, params.Role, params.Remark)
-	service.State.Success()
+	service.State.Success(ctx)
 }

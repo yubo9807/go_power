@@ -9,5 +9,5 @@ import (
 
 func List(ctx *gin.Context) {
 	rows := spider.Roles.RoleList()
-	service.State.SuccessData(rows)
+	service.State.SuccessData(ctx, rows)
 }

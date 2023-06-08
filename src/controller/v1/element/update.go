@@ -16,10 +16,10 @@ func Update(ctx *gin.Context) {
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
-		service.State.ErrorParams()
+		service.State.ErrorParams(ctx)
 		return
 	}
 
 	spider.Elememt.Modify(params.Id, params.Key, params.Name, params.MenuId)
-	service.State.Success()
+	service.State.Success(ctx)
 }

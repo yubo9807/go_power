@@ -14,7 +14,7 @@ func SignIn(ctx *gin.Context) {
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
-		service.State.ErrorParams()
+		service.State.ErrorParams(ctx)
 		return
 	}
 
@@ -23,9 +23,9 @@ func SignIn(ctx *gin.Context) {
 		userInfo["username"] = params.Username
 		tokenString := service.Jwt.Publish(userInfo)
 		service.Jwt.StorageSetToken(params.Username, tokenString)
-		service.State.SuccessData(tokenString)
+		service.State.SuccessData(ctx, tokenString)
 	} else {
-		service.State.ErrorCustom("用户名或密码错误")
+		service.State.ErrorCustom(ctx, "用户名或密码错误")
 	}
 
 }

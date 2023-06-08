@@ -15,7 +15,7 @@ func List(ctx *gin.Context) {
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
-		service.State.ErrorParams()
+		service.State.ErrorParams(ctx)
 		return
 	}
 
@@ -34,5 +34,5 @@ func List(ctx *gin.Context) {
 
 	data := []spider.MenuColumn{}
 	data = append(data, rows1...)
-	service.State.SuccessData(data)
+	service.State.SuccessData(ctx, data)
 }

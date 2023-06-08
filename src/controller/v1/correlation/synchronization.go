@@ -17,7 +17,7 @@ func Synchronization(ctx *gin.Context) {
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
-		service.State.ErrorParams()
+		service.State.ErrorParams(ctx)
 		return
 	}
 
@@ -38,6 +38,6 @@ func Synchronization(ctx *gin.Context) {
 	}
 
 	spider.Correlation.BatchAdditional(params.TableType, params.RoleId, newContactIdList, params.DeleteIdList)
-	service.State.Success()
+	service.State.Success(ctx)
 
 }
