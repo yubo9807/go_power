@@ -50,6 +50,8 @@ func formatSql(str string) string {
 	return str
 }
 
+var ChSql = make(chan [2]string)
+
 func record(query string, args ...interface{}) {
 	sqlStr := formatSql(query)
 	argsStr := ""
@@ -58,6 +60,5 @@ func record(query string, args ...interface{}) {
 		partition := utils.If(i == lastIndex, "", ", ")
 		argsStr += fmt.Sprintf("%v", val) + partition
 	}
-	fmt.Println(sqlStr)
-	// State.RecordSql(sqlStr, argsStr)
+	ChSql <- [2]string{sqlStr, argsStr}
 }
