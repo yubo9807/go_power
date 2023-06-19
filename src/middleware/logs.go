@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"os"
 	"server/src/service"
@@ -25,7 +26,7 @@ func (w responseWriter) Write(body []byte) (int, error) {
 func init() {
 	err := os.Mkdir("logs", 0777)
 	if err != nil {
-		return
+		fmt.Println(err.Error())
 	}
 }
 
@@ -63,7 +64,7 @@ func LogsWrite(ctx *gin.Context, append string) {
 	body := string(state.Body)
 
 	log.Println(
-		// service.State.RunTime,
+		state.RunTime,
 		ctx.ClientIP(),
 		ctx.Request.Method,
 		ctx.Request.RequestURI,
