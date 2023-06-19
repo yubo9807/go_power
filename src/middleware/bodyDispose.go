@@ -2,27 +2,34 @@ package middleware
 
 import (
 	"server/src/service"
+	"sync"
 
 	"github.com/gin-gonic/gin"
 )
 
+var mu sync.Mutex
+var wg sync.WaitGroup
+
 func BodyDispose(ctx *gin.Context) {
-	service.State.InitState(ctx)
 
+	wg.Add(1)
 	go func() {
-		for i := 0; i <= 5; i++ { // 多开启几个接收通道，防止阻塞
-			sql := <-service.ChSql
-			service.State.RecordSql(ctx, sql[0], sql[1])
+		defer func() { mu.Unlock(); wg.Done() }()
+		mu.Lock()
+
+		service.State.InitState(ctx)
+
+		ctx.Next()
+		service.State.RecordSql(ctx, service.SqlStrs)
+		service.SqlStrs = service.SqlStrs[:0]
+
+		// 如果已经返回了结果，不对数据进行包装
+		if ctx.Writer.Written() {
+			return
 		}
+
+		service.State.Result(ctx)
 	}()
-
-	ctx.Next()
-
-	// 如果已经返回了结果，不对数据进行包装
-	if ctx.Writer.Written() {
-		return
-	}
-
-	service.State.Result(ctx)
+	wg.Wait()
 
 }

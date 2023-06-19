@@ -113,8 +113,7 @@ func (s *stateType) ErrorCustom(ctx *gin.Context, msg string) {
 }
 
 // 记录 sql
-func (s *stateType) RecordSql(ctx *gin.Context, query, argsStr string) {
+func (s *stateType) RecordSql(ctx *gin.Context, sqls [][2]string) {
 	store := getStore(ctx)
-	item := [2]string{query, argsStr}
-	store.Sqls = append(store.Sqls, item)
+	store.Sqls = sqls
 }

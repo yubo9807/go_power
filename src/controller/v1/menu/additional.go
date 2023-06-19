@@ -3,13 +3,9 @@ package menu
 import (
 	"server/src/service"
 	"server/src/spider"
-	"sync"
 
 	"github.com/gin-gonic/gin"
 )
-
-var mu sync.Mutex
-var wg sync.WaitGroup
 
 // 添加菜单
 func Additional(ctx *gin.Context) {
@@ -24,20 +20,13 @@ func Additional(ctx *gin.Context) {
 		return
 	}
 
-	wg.Add(1)
-	go func() {
-		defer func() { mu.Unlock(); wg.Done() }()
-		mu.Lock()
-
-		// 已存在的菜单不允许添加
-		rows := spider.Menu.Query(params.Name, "")
-		if len(rows) > 0 {
-			service.State.ErrorCustom(ctx, "菜单'"+params.Name+"'已存在")
-			return
-		}
-		// 添加菜单
-		spider.Menu.Additional(params.Name, params.Title, params.Parent)
-		service.State.Success(ctx)
-	}()
-	wg.Wait()
+	// 已存在的菜单不允许添加
+	rows := spider.Menu.Query(params.Name, "")
+	if len(rows) > 0 {
+		service.State.ErrorCustom(ctx, "菜单'"+params.Name+"'已存在")
+		return
+	}
+	// 添加菜单
+	spider.Menu.Additional(params.Name, params.Title, params.Parent)
+	service.State.Success(ctx)
 }
