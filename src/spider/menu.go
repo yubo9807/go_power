@@ -11,11 +11,13 @@ import (
 var Menu menuTable
 
 type menuTable struct {
-	dbKeys []string
+	dbKeys  []string
+	keysOwn string
 }
 
 func init() {
 	Menu.dbKeys = utils.GetStructDBKeys(tableMenuColumn{})
+	Menu.keysOwn = strings.Join(Menu.dbKeys, ", ")
 }
 
 type tableMenuColumn struct {
@@ -38,10 +40,9 @@ type MenuColumn struct {
 func (m *menuTable) List(title string) []MenuColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
-	keysStr := strings.Join(m.dbKeys, ", ")
 	likeStr := utils.If(title == "", "", " WHERE title LIKE '%"+title+"%'")
 	var menuList []MenuColumn
-	err := db.Select(&menuList, "SELECT "+keysStr+" FROM "+configs.Table_Menu+likeStr+" ORDER BY count ASC;")
+	err := db.Select(&menuList, "SELECT "+m.keysOwn+" FROM "+configs.Table_Menu+likeStr+" ORDER BY count ASC;")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -83,9 +84,8 @@ func (m *menuTable) Exist(name string) []MenuColumn {
 func (m *menuTable) StructureQuery(parent *string) []MenuColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
-	keysStr := strings.Join(m.dbKeys, ", ")
 	var menuList []MenuColumn
-	err := db.Select(&menuList, "SELECT "+keysStr+" FROM "+configs.Table_Menu+" WHERE id = "+*parent+";")
+	err := db.Select(&menuList, "SELECT "+m.keysOwn+" FROM "+configs.Table_Menu+" WHERE id = "+*parent+";")
 	if err != nil {
 		panic(err.Error())
 	}

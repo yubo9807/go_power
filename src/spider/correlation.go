@@ -4,12 +4,21 @@ import (
 	"server/configs"
 	"server/src/service"
 	"server/src/utils"
+	"strings"
 	"time"
 )
 
-type correlationTable struct{}
+type correlationTable struct {
+	dbKeys  []string
+	keysOwn string
+}
 
 var Correlation correlationTable
+
+func init() {
+	Correlation.dbKeys = utils.GetStructDBKeys(CorrelationColumn{})
+	Correlation.keysOwn = strings.Join(Correlation.dbKeys, ", ")
+}
 
 type CorrelationColumn struct {
 	Id         string `json:"id"`
@@ -85,7 +94,7 @@ func (c *correlationTable) TableTypeQuery(roleId, tableType string) []Correlatio
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	var correlation []CorrelationColumn
-	err := db.Select(&correlation, "SELECT * FROM "+configs.Table_Correlation+" WHERE role_id = ? AND table_type = ?;",
+	err := db.Select(&correlation, "SELECT "+c.keysOwn+" FROM "+configs.Table_Correlation+" WHERE role_id = ? AND table_type = ?;",
 		roleId, tableType)
 	if err != nil {
 		panic(err.Error())
@@ -98,7 +107,7 @@ func (c *correlationTable) Query(roleId, tableId, tableType string) []Correlatio
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	var correlation []CorrelationColumn
-	err := db.Select(&correlation, "SELECT * FROM "+configs.Table_Correlation+" WHERE role_id = ? AND table_id = ? AND table_type = ?;",
+	err := db.Select(&correlation, "SELECT "+c.keysOwn+" FROM "+configs.Table_Correlation+" WHERE role_id = ? AND table_id = ? AND table_type = ?;",
 		roleId, tableId, tableType)
 	if err != nil {
 		panic(err.Error())

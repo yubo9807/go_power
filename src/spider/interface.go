@@ -5,14 +5,23 @@ import (
 	"server/configs"
 	"server/src/service"
 	"server/src/utils"
+	"strings"
 	"time"
 )
 
-type interfaceTable struct{}
+type interfaceTable struct {
+	dbKeys  []string
+	keysOwn string
+}
 
 var Interface interfaceTable
 
-type InterfaceColumn struct {
+func init() {
+	Interface.dbKeys = utils.GetStructDBKeys(tableInterfaceColumn{})
+	Interface.keysOwn = strings.Join(Interface.dbKeys, ", ")
+}
+
+type tableInterfaceColumn struct {
 	Id         string  `json:"id"`
 	Method     string  `json:"method"`
 	Url        string  `json:"url"`
@@ -20,7 +29,9 @@ type InterfaceColumn struct {
 	CreateTime int     `json:"createTime" db:"create_time"`
 	UpdateTime *int    `json:"updateTime" db:"update_time"`
 	MenuId     *string `json:"menuId" db:"menu_id"`
-
+}
+type InterfaceColumn struct {
+	tableInterfaceColumn
 	CorrelationId *string `json:"correlationId" db:"correlation_id"`
 	RoleId        *string `json:"roleId" db:"role_id"`
 	Selected      bool    `json:"selected"`
@@ -35,7 +46,7 @@ func (i *interfaceTable) List(menuId, url string) []InterfaceColumn {
 	if menuId != "" {
 		joint = "= '" + menuId + "'"
 	}
-	err := db.Select(&interfaceList, "SELECT * FROM "+configs.Table_Interface+" WHERE menu_id "+joint+" AND url LIKE '%"+url+"%';")
+	err := db.Select(&interfaceList, "SELECT "+i.keysOwn+" FROM "+configs.Table_Interface+" WHERE menu_id "+joint+" AND url LIKE '%"+url+"%';")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -53,7 +64,7 @@ func (i *interfaceTable) PowerListModule(roleId, menuId string) []InterfaceColum
 		joint = "= '" + menuId + "'"
 	}
 	err := db.Select(&interfaceList, `SELECT
-	t1.*,
+	t1.id, t1.method, t1.url,
 	t2.id AS 'correlation_id',
 	t3.id AS 'role_id'
 	FROM `+configs.Table_Interface+` AS t1
@@ -73,7 +84,7 @@ func (i *interfaceTable) Query(method, url string) []InterfaceColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	var interfaceList []InterfaceColumn
-	err := db.Select(&interfaceList, "SELECT * FROM "+configs.Table_Interface+" WHERE method = '"+method+"' AND url LIKE '%"+url+"%';")
+	err := db.Select(&interfaceList, "SELECT "+i.keysOwn+" FROM "+configs.Table_Interface+" WHERE method = '"+method+"' AND url LIKE '%"+url+"%';")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -107,19 +118,19 @@ func (i *interfaceTable) Additional(method, url, name string, menuId *string) {
 }
 
 // 获取具有权限的接口
-// method, url 不为空时进行精确查询
 func (i *interfaceTable) PowerList(roleId, method, url string) []InterfaceColumn {
-	joint := ";"
-	if method != "" && url != "" {
-		joint = " AND method = '" + method + "' AND url = '" + url + "';"
-	}
 	db := service.Sql.DBConnect()
 	defer db.Close()
+	dbKeys := utils.Map(i.dbKeys, func(val string, i int) string {
+		return "t1." + val
+	})
+	keysOwn := strings.Join(dbKeys, ", ")
 	var interfaceList []InterfaceColumn
-	err := db.Select(&interfaceList, `SELECT t1.* FROM `+configs.Table_Interface+` AS t1
+	err := db.Select(&interfaceList, `SELECT `+keysOwn+` FROM `+configs.Table_Interface+` AS t1
 	LEFT JOIN `+configs.Table_Correlation+` AS t2 ON t1.id = t2.table_id
 	LEFT JOIN `+configs.Table_Roles+` AS t3 ON t2.role_id = t3.id
-	WHERE t2.table_type = 'interface' AND t3.id = '`+roleId+`'`+joint)
+	WHERE t2.table_type = 'interface' AND t3.id = ? AND method = ? AND url = ?;`,
+		roleId, method, url)
 	if err != nil {
 		panic(err.Error())
 	}

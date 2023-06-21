@@ -4,21 +4,38 @@ import (
 	"server/configs"
 	"server/src/service"
 	"server/src/utils"
+	"strings"
 	"time"
 )
 
-type elementTable struct{}
+type elementTable struct {
+	dbKeys  []string
+	keysOwn string
+}
 
 var Elememt elementTable
 
-type ElememtColumn struct {
+func init() {
+	Elememt.dbKeys = utils.GetStructDBKeys(tableElementColumn{})
+	newKeys := utils.Map(Elememt.dbKeys, func(val string, i int) string {
+		if val == "key" {
+			val = "`" + val + "`"
+		}
+		return val
+	})
+	Elememt.keysOwn = strings.Join(newKeys, ", ")
+}
+
+type tableElementColumn struct {
 	Id         string  `json:"id"`
 	Key        string  `json:"key"`
 	Name       string  `json:"name"`
 	CreateTime int     `json:"createTime" db:"create_time"`
 	UpdateTime *int    `json:"updateTime" db:"update_time"`
 	MenuId     *string `json:"menuId" db:"menu_id"`
-
+}
+type ElememtColumn struct {
+	tableElementColumn
 	CorrelationId *string `json:"correlationId" db:"correlation_id"`
 	RoleId        *string `json:"roleId" db:"role_id"`
 	Selected      bool    `json:"selected"`
@@ -33,7 +50,7 @@ func (e *elementTable) List(menuId string) []ElememtColumn {
 	if menuId != "" {
 		joint = "= '" + menuId + "'"
 	}
-	err := db.Select(&elementList, "SELECT * FROM "+configs.Table_Element+" WHERE menu_id "+joint+";")
+	err := db.Select(&elementList, "SELECT "+e.keysOwn+" FROM "+configs.Table_Element+" WHERE menu_id "+joint+";")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -51,7 +68,7 @@ func (e *elementTable) PowerList(roleId, menuId string) []ElememtColumn {
 		joint = "= '" + menuId + "'"
 	}
 	err := db.Select(&elementList, `SELECT
-	t1.*,
+	t1.id, t1.key,
 	t2.id AS 'correlation_id',
 	t3.id AS 'role_id'
 	FROM `+configs.Table_Element+` AS t1
@@ -71,7 +88,7 @@ func (e *elementTable) Query(key, name string) []ElememtColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	var elementList []ElememtColumn
-	err := db.Select(&elementList, "SELECT * FROM "+configs.Table_Element+" WHERE 'key' = '"+key+"' AND 'name' LIKE '%"+name+"%';")
+	err := db.Select(&elementList, "SELECT "+e.keysOwn+" FROM "+configs.Table_Element+" WHERE 'key' = '"+key+"' AND 'name' LIKE '%"+name+"%';")
 	if err != nil {
 		panic(err.Error())
 	}
