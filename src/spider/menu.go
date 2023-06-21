@@ -8,11 +8,17 @@ import (
 	"time"
 )
 
-type menuTable struct{}
-
 var Menu menuTable
 
-type tableColumn struct {
+type menuTable struct {
+	dbKeys []string
+}
+
+func init() {
+	Menu.dbKeys = utils.GetStructDBKeys(tableMenuColumn{})
+}
+
+type tableMenuColumn struct {
 	Id         string  `json:"id"`
 	Name       string  `json:"name"`
 	CreateTime int     `json:"createTime" db:"create_time"`
@@ -22,24 +28,17 @@ type tableColumn struct {
 	Count      int     `json:"count"`
 }
 type MenuColumn struct {
-	tableColumn
-
+	tableMenuColumn
 	CorrelationId *string `json:"correlationId" db:"correlation_id"`
 	RoleId        *string `json:"roleId" db:"role_id"`
 	Selected      bool    `json:"selected"`
-}
-
-var dbKeys []string
-
-func init() {
-	dbKeys = utils.GetStructDBKeys(tableColumn{})
 }
 
 // 获取所有菜单
 func (m *menuTable) List(title string) []MenuColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
-	keysStr := strings.Join(dbKeys, ", ")
+	keysStr := strings.Join(m.dbKeys, ", ")
 	likeStr := utils.If(title == "", "", " WHERE title LIKE '%"+title+"%'")
 	var menuList []MenuColumn
 	err := db.Select(&menuList, "SELECT "+keysStr+" FROM "+configs.Table_Menu+likeStr+" ORDER BY count ASC;")
@@ -68,12 +67,12 @@ func (m *menuTable) PowerList(roleId string) []MenuColumn {
 	return menuList
 }
 
-// 查询菜单
-func (m *menuTable) Query(name, title string) []MenuColumn {
+// 查询菜单是否存在
+func (m *menuTable) Exist(name string) []MenuColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	var menuList []MenuColumn
-	err := db.Select(&menuList, "SELECT * FROM "+configs.Table_Menu+" WHERE name = '"+name+"' AND title LIKE '%"+title+"%';")
+	err := db.Select(&menuList, "SELECT id FROM "+configs.Table_Menu+" WHERE name = '"+name+"';")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -84,8 +83,9 @@ func (m *menuTable) Query(name, title string) []MenuColumn {
 func (m *menuTable) StructureQuery(parent *string) []MenuColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
+	keysStr := strings.Join(m.dbKeys, ", ")
 	var menuList []MenuColumn
-	err := db.Select(&menuList, "SELECT * FROM "+configs.Table_Menu+" WHERE id = "+*parent+";")
+	err := db.Select(&menuList, "SELECT "+keysStr+" FROM "+configs.Table_Menu+" WHERE id = "+*parent+";")
 	if err != nil {
 		panic(err.Error())
 	}

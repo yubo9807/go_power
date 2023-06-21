@@ -21,7 +21,7 @@ func Additional(ctx *gin.Context) {
 	}
 
 	// 已存在的菜单不允许添加
-	rows := spider.Menu.Query(params.Name, "")
+	rows := spider.Menu.Exist(params.Name)
 	if len(rows) > 0 {
 		service.State.ErrorCustom(ctx, "菜单'"+params.Name+"'已存在")
 		return
