@@ -1,7 +1,6 @@
 package roles
 
 import (
-	"server/configs"
 	"server/src/service"
 	"server/src/spider"
 
@@ -19,6 +18,6 @@ func Delete(ctx *gin.Context) {
 	}
 
 	spider.Correlation.DeleteCorrelationRoles(params.Id)
-	spider.Common.Delete(configs.Table_Roles, params.Id)
+	spider.Roles.Delete(params.Id)
 	service.State.Success(ctx)
 }

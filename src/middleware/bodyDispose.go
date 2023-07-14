@@ -12,24 +12,24 @@ var wg sync.WaitGroup
 
 func BodyDispose(ctx *gin.Context) {
 
-	wg.Add(1)
-	go func() {
-		defer func() { mu.Unlock(); wg.Done() }()
-		mu.Lock()
+	// wg.Add(1)
+	// go func() {
+	// 	defer func() { mu.Unlock(); wg.Done() }()
+	// 	mu.Lock()
 
-		service.State.InitState(ctx)
+	service.State.InitState(ctx)
 
-		ctx.Next()
-		service.State.RecordSql(ctx, service.SqlStrs)
-		service.SqlStrs = service.SqlStrs[:0]
+	ctx.Next()
+	service.State.RecordSql(ctx, service.SqlStrs)
+	service.SqlStrs = service.SqlStrs[:0]
 
-		// 如果已经返回了结果，不对数据进行包装
-		if ctx.Writer.Written() {
-			return
-		}
+	// 如果已经返回了结果，不对数据进行包装
+	if ctx.Writer.Written() {
+		return
+	}
 
-		service.State.Result(ctx)
-	}()
-	wg.Wait()
+	service.State.Result(ctx)
+	// }()
+	// wg.Wait()
 
 }

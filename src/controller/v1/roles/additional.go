@@ -9,8 +9,9 @@ import (
 
 func Additional(ctx *gin.Context) {
 	type Params struct {
-		Role   string `form:"role" binding:"required"`
-		Remark string `form:"remark"`
+		Role   string  `form:"role" binding:"required"`
+		Remark *string `form:"remark"`
+		Parent *string `form:"parent"`
 	}
 	var params Params
 	if err := ctx.ShouldBind(&params); err != nil {
@@ -25,6 +26,6 @@ func Additional(ctx *gin.Context) {
 		return
 	}
 
-	spider.Roles.Additional(params.Role, params.Remark)
+	spider.Roles.Additional(params.Role, params.Remark, params.Parent)
 	service.State.Success(ctx)
 }
