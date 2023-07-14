@@ -4,12 +4,21 @@ import (
 	"server/configs"
 	"server/src/service"
 	"server/src/utils"
+	"strings"
 	"time"
 )
 
-type rolesTable struct{}
-
 var Roles rolesTable
+
+type rolesTable struct {
+	dbKeys  []string
+	keysOwn string
+}
+
+func init() {
+	Roles.dbKeys = utils.GetStructDBKeys(RoleColumn{})
+	Roles.keysOwn = strings.Join(Roles.dbKeys, ", ")
+}
 
 type RoleColumn struct {
 	Id         string  `json:"id"`
@@ -20,11 +29,13 @@ type RoleColumn struct {
 }
 
 // 获取角色列表
-func (r *rolesTable) RoleList() []RoleColumn {
+func (r *rolesTable) RoleList(role string) []RoleColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
+	likeStr := utils.If(role == "", "", " WHERE role = '"+role+"'")
 	var roleList []RoleColumn
-	err := db.Select(&roleList, "SELECT * FROM "+configs.Table_Roles+";")
+	sqlStr := "SELECT " + r.keysOwn + " FROM " + configs.Table_Roles + likeStr + " ORDER BY create_time ASC;"
+	err := db.Select(&roleList, sqlStr)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -32,13 +43,13 @@ func (r *rolesTable) RoleList() []RoleColumn {
 }
 
 // 添加角色
-func (r *rolesTable) Additional(role string) {
+func (r *rolesTable) Additional(role, remark string) {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	id := utils.CreateID()
 	createTime := time.Now().Unix()
-	_, err := db.Exec("INSERT INTO "+configs.Table_Roles+"(id, role, create_time) values(?, ?, ?);",
-		id, role, createTime)
+	_, err := db.Exec("INSERT INTO "+configs.Table_Roles+"(id, role, remark, create_time) values(?, ?, ?, ?);",
+		id, role, remark, createTime)
 	if err != nil {
 		panic(err.Error())
 	}

@@ -8,6 +8,15 @@ import (
 )
 
 func List(ctx *gin.Context) {
-	rows := spider.Roles.RoleList()
+	type Params struct {
+		Role string `form:"role"`
+	}
+	var params Params
+	if err := ctx.ShouldBind(&params); err != nil {
+		service.State.ErrorParams(ctx)
+		return
+	}
+
+	rows := spider.Roles.RoleList(params.Role)
 	service.State.SuccessData(ctx, rows)
 }
