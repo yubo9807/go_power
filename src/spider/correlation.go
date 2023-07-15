@@ -79,16 +79,6 @@ func (c *correlationTable) DeleteCorrelation(tableType, tableId string) {
 	}
 }
 
-// 删除关联角色的数据
-func (c *correlationTable) DeleteCorrelationRoles(roleId string) {
-	db := service.Sql.DBConnect()
-	defer db.Close()
-	_, err := db.Exec("DELETE FROM "+configs.Table_Correlation+" WHERE role_id = ?;", roleId)
-	if err != nil {
-		panic(err.Error())
-	}
-}
-
 // 按类型查询
 func (c *correlationTable) TableTypeQuery(roleId, tableType string) []CorrelationColumn {
 	db := service.Sql.DBConnect()

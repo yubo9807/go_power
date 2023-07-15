@@ -80,6 +80,14 @@ func (r *rolesTable) Delete(id string) {
 		}
 	}
 
+	// 关联表相关数据
+	{
+		_, err := db.Exec("DELETE FROM "+configs.Table_Correlation+" WHERE role_id = ?;", id)
+		if err != nil {
+			panic(err.Error())
+		}
+	}
+
 	// 找子级
 	{
 		var roleList []RoleColumn

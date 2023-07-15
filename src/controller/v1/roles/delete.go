@@ -17,7 +17,6 @@ func Delete(ctx *gin.Context) {
 		return
 	}
 
-	spider.Correlation.DeleteCorrelationRoles(params.Id)
 	spider.Roles.Delete(params.Id)
 	service.State.Success(ctx)
 }
