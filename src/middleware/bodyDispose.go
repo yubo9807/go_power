@@ -2,20 +2,11 @@ package middleware
 
 import (
 	"server/src/service"
-	"sync"
 
 	"github.com/gin-gonic/gin"
 )
 
-var mu sync.Mutex
-var wg sync.WaitGroup
-
 func BodyDispose(ctx *gin.Context) {
-
-	// wg.Add(1)
-	// go func() {
-	// 	defer func() { mu.Unlock(); wg.Done() }()
-	// 	mu.Lock()
 
 	service.State.InitState(ctx)
 
@@ -29,7 +20,5 @@ func BodyDispose(ctx *gin.Context) {
 	}
 
 	service.State.Result(ctx)
-	// }()
-	// wg.Wait()
 
 }
