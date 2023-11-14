@@ -36,3 +36,20 @@ func List(ctx *gin.Context) {
 	data = append(data, rows1...)
 	service.State.SuccessData(ctx, data)
 }
+
+func Authority(ctx *gin.Context) {
+	type Params struct {
+		RoleId string `form:"roleId" binding:"required"`
+	}
+	var params Params
+	if err := ctx.ShouldBind(&params); err != nil {
+		service.State.ErrorParams(ctx)
+		return
+	}
+
+	rows := spider.Elememt.PowerList2(params.RoleId)
+
+	data := []spider.ElememtColumn{}
+	data = append(data, rows...)
+	service.State.SuccessData(ctx, data)
+}

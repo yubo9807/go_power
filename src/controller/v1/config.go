@@ -36,6 +36,7 @@ func Route(r *gin.RouterGroup) {
 	r.POST("/element/delete", common.Delete(configs.Table_Element))
 	r.POST("/element/modify", element.Update)
 	r.GET("/element/list", element.List)
+	r.GET("/element/authority", element.Authority)
 
 	// 关联表，权限控制
 	r.POST("/correlation/synchronization", correlation.Synchronization)

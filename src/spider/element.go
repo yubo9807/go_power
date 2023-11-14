@@ -83,6 +83,27 @@ func (e *elementTable) PowerList(roleId, menuId string) []ElememtColumn {
 	return elementList
 }
 
+// 获取有权限的元素
+func (e *elementTable) PowerList2(roleId string) []ElememtColumn {
+	db := service.Sql.DBConnect()
+	defer db.Close()
+	var elementList []ElememtColumn
+	err := db.Select(&elementList, `SELECT
+	t1.id, t1.key,
+	t2.id AS 'correlation_id',
+	t3.id AS 'role_id'
+	FROM `+configs.Table_Element+` AS t1
+	LEFT JOIN `+configs.Table_Correlation+` AS t2
+	ON t1.id = t2.table_id
+	LEFT JOIN `+configs.Table_Roles+` AS t3
+	ON t2.role_id = t3.id
+	WHERE t2.table_type = 'element' AND t3.id = '`+roleId+"';")
+	if err != nil {
+		panic(err.Error())
+	}
+	return elementList
+}
+
 // 查询元素
 func (e *elementTable) Query(key, name string) []ElememtColumn {
 	db := service.Sql.DBConnect()
