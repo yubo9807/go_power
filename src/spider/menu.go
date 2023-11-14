@@ -100,15 +100,19 @@ func (m *menuTable) Additional(name, title string, parent *string) {
 	{
 		// 查询最大排序
 		type menuCount struct {
-			Count int
+			Count *int
 		}
 		var menuCountList []menuCount
 		err := db.Select(&menuCountList, "SELECT MAX(`count`) AS count FROM "+configs.Table_Menu+";")
 		if err != nil {
 			panic(err.Error())
 		}
-		if len(menuCountList) > 0 {
-			maxCount = menuCountList[0].Count + 1
+
+		num := menuCountList[0].Count
+		if num == nil {
+			maxCount = 0
+		} else {
+			maxCount = *num
 		}
 	}
 	id := utils.CreateID()
