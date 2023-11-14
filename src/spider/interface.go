@@ -1,7 +1,6 @@
 package spider
 
 import (
-	"fmt"
 	"server/configs"
 	"server/src/service"
 	"server/src/utils"
@@ -108,7 +107,6 @@ func (i *interfaceTable) Additional(method, url, name string, menuId *string) {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	id := utils.CreateID()
-	fmt.Println(id)
 	createTime := time.Now().Unix()
 	_, err := db.Exec("INSERT INTO "+configs.Table_Interface+"(id, method, url, name, menu_id, create_time) values(?, ?, ?, ?, ?, ?);",
 		id, method, url, name, menuId, createTime)

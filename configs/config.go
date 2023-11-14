@@ -12,9 +12,7 @@ type ConfigType struct {
 	SqlSecret   string `yaml:"sqlSecret"`
 	TablePrefix string `yaml:"tablesPrefix"`
 
-	Certification bool
-	Username      string
-	Password      string
+	OpenId string `yaml:"openId"`
 }
 
 var Config ConfigType
@@ -26,9 +24,7 @@ sqlSecret: "user:password@tcp(0.0.0.0:3306)/database"  # sql 密匙
 
 tablesPrefix: "s_"  # 数据库表前缀，防止与业务表冲突
 
-certification: false  # 授权认证
-username: power   # 用户名
-password: 12345  # 密码
+openId: "1hendj97f"  # 用户唯一标识
 `
 
 var (
