@@ -19,6 +19,7 @@ func server() *gin.Engine {
 	base.Use(middleware.Recover)
 	base.Use(middleware.Logs)
 	base.Use(middleware.BodyDispose)
+	base.Use(middleware.Timeout)
 
 	v1.Route(base.Group("/v1/api"))
 

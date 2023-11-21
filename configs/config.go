@@ -12,6 +12,8 @@ type ConfigType struct {
 	SqlSecret   string `yaml:"sqlSecret"`
 	TablePrefix string `yaml:"tablesPrefix"`
 
+	TimeOut int `yaml:"timeOut"`
+
 	OpenId string `yaml:"openId"`
 }
 
@@ -23,6 +25,8 @@ port: 8080  # 启动端口
 sqlSecret: "user:password@tcp(0.0.0.0:3306)/database"  # sql 密匙
 
 tablesPrefix: "s_"  # 数据库表前缀，防止与业务表冲突
+
+timeOut: 5  # 请求超时时间(s)
 
 openId: "1hendj97f"  # 用户唯一标识
 `
