@@ -109,11 +109,6 @@ func (s *stateType) ErrorTokenFailure(ctx *gin.Context) {
 	errorParams(ctx, 405, "token failure")
 }
 
-// 请求超时
-func (s *stateType) ErrorRequestTimeout(ctx *gin.Context) {
-	errorParams(ctx, 504, "request timeout")
-}
-
 // 自定义错误消息
 func (s *stateType) ErrorCustom(ctx *gin.Context, msg string) {
 	errorParams(ctx, 500, msg)

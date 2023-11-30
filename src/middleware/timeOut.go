@@ -3,28 +3,27 @@ package middleware
 import (
 	"context"
 	"server/configs"
-	"server/src/service"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
-func Timeout(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(c.Request.Context(), time.Duration(configs.Config.TimeOut)*time.Second)
+func Timeout(ctx *gin.Context) {
+	context, cancel := context.WithTimeout(ctx.Request.Context(), time.Duration(configs.Config.TimeOut)*time.Second)
 	defer cancel()
 
-	c.Request = c.Request.WithContext(ctx)
+	ctx.Request = ctx.Request.WithContext(context)
 
 	ch := make(chan struct{})
 	go func() {
-		c.Next()
+		ctx.Next()
 		close(ch)
 	}()
 
 	select {
 	case <-ch:
-		c.Next()
-	case <-ctx.Done():
-		service.State.ErrorRequestTimeout(c)
+		ctx.Next()
+	case <-context.Done():
+		ctx.String(504, "connect timeout")
 	}
 }
