@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"server/src/service"
 	"server/src/utils"
 	"time"
@@ -40,8 +41,11 @@ func Logs(ctx *gin.Context) {
 
 	ctx.Next()
 
-	// response := writer.body.String()
-	LogsWrite(ctx, "")
+	response := ""
+	if service.State.GetStateStore(ctx).Code != 200 {
+		response = "\nresponse: " + writer.body.String()
+	}
+	LogsWrite(ctx, response)
 }
 
 func LogsWrite(ctx *gin.Context, append string) {
@@ -61,7 +65,8 @@ func LogsWrite(ctx *gin.Context, append string) {
 		sql += "\n" + mark + val[0] + args
 	}
 
-	body := string(state.Body)
+	reg := regexp.MustCompile(" |\n")
+	body := reg.ReplaceAllString(state.Body, "")
 
 	log.Println(
 		state.RunTime,
