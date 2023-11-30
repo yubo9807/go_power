@@ -71,6 +71,7 @@ func (s *stateType) Result(ctx *gin.Context) {
 		"message": store.Message,
 		"runTime": store.RunTime,
 	})
+	ctx.Abort()
 }
 
 // 请求成功，并返回数据
@@ -95,6 +96,7 @@ func errorParams(ctx *gin.Context, code int, msg string) {
 // 参数错误
 func (s *stateType) ErrorParams(ctx *gin.Context) {
 	errorParams(ctx, 406, "params error")
+	ctx.Abort()
 }
 
 // 未授权

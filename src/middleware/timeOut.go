@@ -26,6 +26,5 @@ func Timeout(c *gin.Context) {
 		c.Next()
 	case <-ctx.Done():
 		service.State.ErrorRequestTimeout(c)
-		c.Abort()
 	}
 }
