@@ -121,7 +121,7 @@ func (e *elementTable) Modify(id, key, name, menuId string) {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	updateTime := time.Now().Unix()
-	_, err := db.Exec("UPDATE "+configs.Table_Element+" SET update_time = ?, key = ?, name = ?, menu_id = ? WHERE id = ?;",
+	_, err := db.Exec("UPDATE "+configs.Table_Element+" SET update_time = ?, `key` = ?, `name` = ?, menu_id = ? WHERE id = ?;",
 		updateTime, key, name, menuId, id)
 	if err != nil {
 		panic(err.Error())
