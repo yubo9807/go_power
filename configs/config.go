@@ -7,10 +7,11 @@ import (
 )
 
 type ConfigType struct {
-	Port        int
-	Prefix      string
-	SqlSecret   string `yaml:"sqlSecret"`
-	TablePrefix string `yaml:"tablesPrefix"`
+	Port           int
+	Prefix         string
+	LogReserveTime int    `yaml:"logReserveTime"`
+	SqlSecret      string `yaml:"sqlSecret"`
+	TablePrefix    string `yaml:"tablesPrefix"`
 
 	OpenId string `yaml:"openId"`
 }
@@ -20,8 +21,9 @@ var Config ConfigType
 const template = `
 prefix: "/permissions"  # 路由前缀
 port: 8080  # 启动端口
-sqlSecret: "user:password@tcp(0.0.0.0:3306)/database?timeout=5s"  # sql 密匙
+logReserveTime: 30  # 日志保留时间(d)
 
+sqlSecret: "user:password@tcp(0.0.0.0:3306)/database?timeout=5s"  # sql 密匙
 tablesPrefix: "s_"  # 数据库表前缀，防止与业务表冲突
 
 openId: "1hendj97f"  # 用户唯一标识
