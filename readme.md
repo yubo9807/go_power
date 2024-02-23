@@ -6,9 +6,8 @@
 - 根据角色分配菜单，接口，页面元素
 - 业务服务层将角色与该服务同步
 
-## 表结构
-
-- `./db/permissions.sql`，可通过 config.yml 配置表前缀
+- [表结构](./db/permissions.sql)
+- [接口逻辑](./docs/接口逻辑.md)
 
 ## 效果预览地址
 
