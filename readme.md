@@ -2,13 +2,13 @@
 
 ## 介绍
 
-- 权限分配 中间层服务器
+- 权限分配服务
 - 根据角色分配菜单，接口，页面元素
 - 业务服务层将角色与该服务同步
 
 ## 表结构
 
-- `./db/permissions.sql`
+- `./db/permissions.sql`，可通过 config.yml 配置表前缀
 
 ## 效果预览地址
 
@@ -17,5 +17,5 @@
 
 ## 启动
 
-- 启动： `go run src/server.go dev`
+- 启动： `go run src/server.go`
 - 打包： `./scripts/build.sh`
