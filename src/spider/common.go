@@ -23,7 +23,7 @@ func (c *commonType) Delete(tableName, id string) {
 }
 
 // 修改 menu_id 指向为空
-func (c *commonType) DeleteMenuId(menuId string) {
+func (c *commonType) UpdateMenuId(menuId string) {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	updateTime := time.Now().Unix()

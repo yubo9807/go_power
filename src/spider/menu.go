@@ -115,6 +115,8 @@ func (m *menuTable) Additional(name, title string, parent *string) {
 			maxCount = *num
 		}
 	}
+
+	// 添加数据
 	id := utils.CreateID()
 	createTime := time.Now().Unix()
 	_, err := db.Exec("INSERT INTO "+configs.Table_Menu+"(id, name, title, parent, count, create_time) values(?, ?, ?, ?, ?, ?);",

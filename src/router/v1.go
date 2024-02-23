@@ -1,8 +1,6 @@
 package router
 
 import (
-	"server/configs"
-	"server/src/controller/common"
 	"server/src/controller/correlation"
 	"server/src/controller/element"
 	"server/src/controller/menu"
@@ -27,13 +25,13 @@ func V1(r *gin.RouterGroup) {
 
 	// 接口
 	r.POST("/interface/add", middleware.Sync, orifice.Additional)
-	r.POST("/interface/delete", common.Delete(configs.Table_Interface))
+	r.POST("/interface/delete", orifice.Delete)
 	r.POST("/interface/modify", orifice.Update)
 	r.GET("/interface/list", orifice.List)
 
 	// 元素
 	r.POST("/element/add", middleware.Sync, element.Additional)
-	r.POST("/element/delete", common.Delete(configs.Table_Element))
+	r.POST("/element/delete", element.Delete)
 	r.POST("/element/modify", element.Update)
 	r.GET("/element/list", element.List)
 	r.GET("/element/authority", element.Authority)

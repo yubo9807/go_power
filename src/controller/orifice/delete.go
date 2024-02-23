@@ -1,4 +1,4 @@
-package menu
+package orifice
 
 import (
 	"server/configs"
@@ -19,8 +19,7 @@ func Delete(ctx *gin.Context) {
 		return
 	}
 
-	spider.Common.UpdateMenuId(params.Id)
-	spider.Correlation.DeleteCorrelation(configs.Table_Menu, params.Id)
-	spider.Common.Delete(configs.Table_Menu, params.Id)
+	spider.Correlation.DeleteCorrelation("interface", params.Id)
+	spider.Common.Delete(configs.Table_Interface, params.Id)
 	service.State.Success(ctx)
 }
