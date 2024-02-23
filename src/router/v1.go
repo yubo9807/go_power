@@ -1,19 +1,19 @@
-package v1
+package router
 
 import (
 	"server/configs"
-	"server/src/controller/v1/common"
-	"server/src/controller/v1/correlation"
-	"server/src/controller/v1/element"
-	"server/src/controller/v1/menu"
-	"server/src/controller/v1/orifice"
-	"server/src/controller/v1/roles"
+	"server/src/controller/common"
+	"server/src/controller/correlation"
+	"server/src/controller/element"
+	"server/src/controller/menu"
+	"server/src/controller/orifice"
+	"server/src/controller/roles"
 	"server/src/middleware"
 
 	"github.com/gin-gonic/gin"
 )
 
-func Route(r *gin.RouterGroup) {
+func V1(r *gin.RouterGroup) {
 
 	// 授权验证
 	r.Use(middleware.Authorization)

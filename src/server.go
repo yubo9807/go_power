@@ -2,8 +2,8 @@ package main
 
 import (
 	"server/configs"
-	v1 "server/src/controller/v1"
 	"server/src/middleware"
+	"server/src/router"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -20,7 +20,7 @@ func server() *gin.Engine {
 	base.Use(middleware.Logs)
 	base.Use(middleware.BodyDispose)
 
-	v1.Route(base.Group("/v1/api"))
+	router.V1(base.Group("/v1/api"))
 
 	return app
 }
