@@ -40,11 +40,18 @@ type MenuColumn struct {
 func (m *menuTable) List(title string) []MenuColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
-	likeStr := utils.If(title == "", "", " WHERE title LIKE '%"+title+"%'")
 	var menuList []MenuColumn
-	err := db.Select(&menuList, "SELECT "+m.keysOwn+" FROM "+configs.Table_Menu+likeStr+" ORDER BY count ASC;")
-	if err != nil {
-		panic(err.Error())
+	if title == "" {
+		err := db.Select(&menuList, "SELECT "+m.keysOwn+" FROM "+configs.Table_Menu+" ORDER BY count ASC;")
+		if err != nil {
+			panic(err.Error())
+		}
+	} else {
+		newTitle := "%" + title + "%"
+		err := db.Select(&menuList, "SELECT "+m.keysOwn+" FROM "+configs.Table_Menu+" WHERE title LIKE ? ORDER BY count ASC;", newTitle)
+		if err != nil {
+			panic(err.Error())
+		}
 	}
 	return menuList
 }
@@ -61,7 +68,7 @@ func (m *menuTable) PowerList(roleId string) []MenuColumn {
 	ON t1.id = t2.table_id
 	LEFT JOIN `+configs.Table_Roles+` AS t3
 	ON t2.role_id = t3.id
-	WHERE t2.table_type = 'menu' AND t3.id = '`+roleId+"';")
+	WHERE t2.table_type = 'menu' AND t3.id = ?;`, roleId)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -73,7 +80,7 @@ func (m *menuTable) Exist(name string) []MenuColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	var menuList []MenuColumn
-	err := db.Select(&menuList, "SELECT id FROM "+configs.Table_Menu+" WHERE name = '"+name+"';")
+	err := db.Select(&menuList, "SELECT id FROM "+configs.Table_Menu+" WHERE name = ?;", name)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -85,7 +92,7 @@ func (m *menuTable) StructureQuery(parent *string) []MenuColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	var menuList []MenuColumn
-	err := db.Select(&menuList, "SELECT "+m.keysOwn+" FROM "+configs.Table_Menu+" WHERE id = "+*parent+";")
+	err := db.Select(&menuList, "SELECT "+m.keysOwn+" FROM "+configs.Table_Menu+" WHERE id = ?;", parent)
 	if err != nil {
 		panic(err.Error())
 	}

@@ -46,13 +46,16 @@ func (e *elementTable) List(menuId string) []ElememtColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	var elementList []ElememtColumn
-	joint := "IS NULL"
-	if menuId != "" {
-		joint = "= '" + menuId + "'"
-	}
-	err := db.Select(&elementList, "SELECT "+e.keysOwn+" FROM "+configs.Table_Element+" WHERE menu_id "+joint+";")
-	if err != nil {
-		panic(err.Error())
+	if menuId == "" {
+		err := db.Select(&elementList, "SELECT "+e.keysOwn+" FROM "+configs.Table_Element+" WHERE menu_id IS NULL;")
+		if err != nil {
+			panic(err.Error())
+		}
+	} else {
+		err := db.Select(&elementList, "SELECT "+e.keysOwn+" FROM "+configs.Table_Element+" WHERE menu_id = ?;", menuId)
+		if err != nil {
+			panic(err.Error())
+		}
 	}
 	return elementList
 }
@@ -63,22 +66,26 @@ func (e *elementTable) PowerList(roleId, menuId string) []ElememtColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	var elementList []ElememtColumn
-	joint := "IS NULL"
-	if menuId != "" {
-		joint = "= '" + menuId + "'"
-	}
-	err := db.Select(&elementList, `SELECT
+	sqlStr := `SELECT
 	t1.id, t1.key,
 	t2.id AS 'correlation_id',
 	t3.id AS 'role_id'
-	FROM `+configs.Table_Element+` AS t1
-	LEFT JOIN `+configs.Table_Correlation+` AS t2
+	FROM ` + configs.Table_Element + ` AS t1
+	LEFT JOIN ` + configs.Table_Correlation + ` AS t2
 	ON t1.id = t2.table_id
-	LEFT JOIN `+configs.Table_Roles+` AS t3
+	LEFT JOIN ` + configs.Table_Roles + ` AS t3
 	ON t2.role_id = t3.id
-	WHERE t2.table_type = 'element' AND t3.id = '`+roleId+"' AND t1.menu_id "+joint+";")
-	if err != nil {
-		panic(err.Error())
+	WHERE t2.table_type = 'element' AND t3.id = ? AND t1.menu_id `
+	if menuId == "" {
+		err := db.Select(&elementList, sqlStr+"IS NULL;", roleId)
+		if err != nil {
+			panic(err.Error())
+		}
+	} else {
+		err := db.Select(&elementList, sqlStr+"= ?;", roleId, menuId)
+		if err != nil {
+			panic(err.Error())
+		}
 	}
 	return elementList
 }
@@ -97,7 +104,7 @@ func (e *elementTable) PowerList2(roleId string) []ElememtColumn {
 	ON t1.id = t2.table_id
 	LEFT JOIN `+configs.Table_Roles+` AS t3
 	ON t2.role_id = t3.id
-	WHERE t2.table_type = 'element' AND t3.id = '`+roleId+"';")
+	WHERE t2.table_type = 'element' AND t3.id = ?;`, roleId)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -109,7 +116,8 @@ func (e *elementTable) Query(key, name string) []ElememtColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	var elementList []ElememtColumn
-	err := db.Select(&elementList, "SELECT "+e.keysOwn+" FROM "+configs.Table_Element+" WHERE 'key' = '"+key+"' AND 'name' LIKE '%"+name+"%';")
+	newName := "%" + name + "%"
+	err := db.Select(&elementList, "SELECT "+e.keysOwn+" FROM "+configs.Table_Element+" WHERE 'key' = ? AND 'name' LIKE ?;", key, newName)
 	if err != nil {
 		panic(err.Error())
 	}

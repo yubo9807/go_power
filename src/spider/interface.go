@@ -41,13 +41,17 @@ func (i *interfaceTable) List(menuId, url string) []InterfaceColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	var interfaceList []InterfaceColumn
-	joint := "IS NULL"
-	if menuId != "" {
-		joint = "= '" + menuId + "'"
-	}
-	err := db.Select(&interfaceList, "SELECT "+i.keysOwn+" FROM "+configs.Table_Interface+" WHERE menu_id "+joint+" AND url LIKE '%"+url+"%';")
-	if err != nil {
-		panic(err.Error())
+	newUrl := "%" + url + "%"
+	if menuId == "" {
+		err := db.Select(&interfaceList, "SELECT "+i.keysOwn+" FROM "+configs.Table_Interface+" WHERE menu_id IS NULL AND url LIKE ?;", newUrl)
+		if err != nil {
+			panic(err.Error())
+		}
+	} else {
+		err := db.Select(&interfaceList, "SELECT "+i.keysOwn+" FROM "+configs.Table_Interface+" WHERE menu_id = ? AND url LIKE ?;", menuId, newUrl)
+		if err != nil {
+			panic(err.Error())
+		}
 	}
 	return interfaceList
 }
@@ -58,22 +62,26 @@ func (i *interfaceTable) PowerListModule(roleId, menuId string) []InterfaceColum
 	db := service.Sql.DBConnect()
 	defer db.Close()
 	var interfaceList []InterfaceColumn
-	joint := "IS NULL"
-	if menuId != "" {
-		joint = "= '" + menuId + "'"
-	}
-	err := db.Select(&interfaceList, `SELECT
+	sqlStr := `SELECT
 	t1.id, t1.method, t1.url,
 	t2.id AS 'correlation_id',
 	t3.id AS 'role_id'
-	FROM `+configs.Table_Interface+` AS t1
-	LEFT JOIN `+configs.Table_Correlation+` AS t2
+	FROM ` + configs.Table_Interface + ` AS t1
+	LEFT JOIN ` + configs.Table_Correlation + ` AS t2
 	ON t1.id = t2.table_id
-	LEFT JOIN `+configs.Table_Roles+` AS t3
+	LEFT JOIN ` + configs.Table_Roles + ` AS t3
 	ON t2.role_id = t3.id
-	WHERE t2.table_type = 'interface' AND t3.id = '`+roleId+"' AND t1.menu_id "+joint+";")
-	if err != nil {
-		panic(err.Error())
+	WHERE t2.table_type = 'interface' AND t3.id = ? AND t1.menu_id `
+	if menuId == "" {
+		err := db.Select(&interfaceList, sqlStr+"IS NULL;", roleId)
+		if err != nil {
+			panic(err.Error())
+		}
+	} else {
+		err := db.Select(&interfaceList, sqlStr+"= ?;", roleId, menuId)
+		if err != nil {
+			panic(err.Error())
+		}
 	}
 	return interfaceList
 }

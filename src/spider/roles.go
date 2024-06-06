@@ -33,12 +33,20 @@ type RoleColumn struct {
 func (r *rolesTable) RoleList(role string) []RoleColumn {
 	db := service.Sql.DBConnect()
 	defer db.Close()
-	likeStr := utils.If(role == "", "", " WHERE role = '"+role+"'")
 	var roleList []RoleColumn
-	sqlStr := "SELECT " + r.keysOwn + " FROM " + configs.Table_Roles + likeStr + " ORDER BY create_time ASC;"
-	err := db.Select(&roleList, sqlStr)
-	if err != nil {
-		panic(err.Error())
+	var sqlStr string
+	if role == "" {
+		sqlStr = "SELECT " + r.keysOwn + " FROM " + configs.Table_Roles + " ORDER BY create_time ASC;"
+		err := db.Select(&roleList, sqlStr)
+		if err != nil {
+			panic(err.Error())
+		}
+	} else {
+		sqlStr = "SELECT " + r.keysOwn + " FROM " + configs.Table_Roles + " WHERE role = ? ORDER BY create_time ASC;"
+		err := db.Select(&roleList, sqlStr, role)
+		if err != nil {
+			panic(err.Error())
+		}
 	}
 	return roleList
 }
