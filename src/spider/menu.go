@@ -119,7 +119,7 @@ func (m *menuTable) Additional(name, title string, parent *string) {
 		if num == nil {
 			maxCount = 0
 		} else {
-			maxCount = *num
+			maxCount = *num + 1
 		}
 	}
 
