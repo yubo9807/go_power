@@ -11,8 +11,8 @@
 
 ## 效果预览地址
 
-- http://hpyyb.cn/wide/permissions/
-- 前端代码：https://github.com/yubo9807/wide/tree/main/src/sub-permissions/views/permissions
+- https://yubo9807.github.io/admin-template/
+- 前端代码：https://github.com/yubo9807/admin-template
 
 ## 启动
 
