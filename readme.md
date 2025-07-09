@@ -14,7 +14,7 @@
 1. `./server` 后会生成一个 `config.yml` 的配置文件。不管是 Nginx 还是 后端程序代理（推荐），添加请求头 `Open-Id`，`config.yml` 中设置的 openId。不可将 openId 暴露在前端；
 2. 后端业务接口权限分配，需要调用该服务的 {baseURL}/v1/api/interface/authority 接口来获取是否具有权限。
 
-> 业务服务 Go 代码接入示例： /test/proxy.go
+[业务服务 Go 代码接入示例](./test/proxy.go)
 
 
 ## 效果预览地址
